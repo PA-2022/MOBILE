@@ -19,6 +19,7 @@ class AuthService {
       "/";
   SignInFieldsViewModel? signInFieldsVm;
   static Person? currentUser;
+  static String? photo;
 
   AuthService({this.signInFieldsVm});
 
@@ -35,7 +36,7 @@ class AuthService {
     int randomNumber(int min, int max) => min + _random.nextInt(max - min);
     User loggedUser =
         users.firstWhere((user) => user.username == userFields.username);
-    currentUser = Person(loggedUser, TestData.photos[randomNumber(0, 3)]);
+    currentUser = Person(loggedUser,"http://elasticbeanstalk-eu-west-1-766564147455.s3.eu-west-1.amazonaws.com/avatar.png");// + photo!
     return currentUser;
   }
 

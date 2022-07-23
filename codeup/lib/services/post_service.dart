@@ -24,6 +24,12 @@ class PostService {
     return response;
   }
 
+  Future<http.Response> fetchPostById(int postId) async {
+    final response =
+        await http.get(Uri.parse(apiUrl + "posts/" + postId.toString()));
+    return response;
+  }
+
   Future<http.Response> fetchPostsByForumId(int forumId) async {
     String token = "";
     token = await SecureStorageService.getInstance()

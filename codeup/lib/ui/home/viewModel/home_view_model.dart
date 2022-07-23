@@ -38,6 +38,19 @@ class HomeViewModel with ChangeNotifier {
     return allPosts;
   }
 
+  Future<Post> fetchPostById(int postId) async {
+    Post post = Post(-1, "", "", "", -1, -1, null, -1);
+
+    await forumViewModel.fetchForums().then((data) async {
+     
+        await postService.fetchPostById(postId).then((data) async {
+          post = Post.fromJson(jsonDecode(data.body));
+          
+        });
+    });
+    return post;
+  }
+
   Future<List<PostBox>> fetchHomePosts() async {
     List<PostBox> allPosts = [];
 

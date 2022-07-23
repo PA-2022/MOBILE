@@ -1,6 +1,7 @@
 import 'package:codeup/services/post_vote_service.dart';
 import 'package:codeup/ui/post/viewModel/post_view_model.dart';
 import 'package:flutter/material.dart';
+import 'package:http/http.dart';
 
 import '../../entities/post.dart';
 import '../../entities/post_vote.dart';
@@ -119,17 +120,16 @@ class _VotesCounterState extends State<VotesCounter> {
       setState(() {
         widget.counter--;
       });
+      
     }
   }
 
   void _resetCounter(bool up) async {
-    int first = widget.post.note;
-    print("reset");
    final postVote = await postViewModel.fetchUserVoteByPostId(widget.post.id);
    final response = await postVoteService.deleteUserVoteForPost(postVote);
    if(response.statusCode == 200 || response.statusCode == 201) {
      setState(() {
-       widget.counter = first;
+       widget.counter = postVote.upvote ? widget.counter - 1 : widget.counter + 1;
      });
    }
   }

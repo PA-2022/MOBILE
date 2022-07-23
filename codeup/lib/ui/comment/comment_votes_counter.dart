@@ -126,16 +126,13 @@ class _CommentVotesCounterState extends State<CommentVotesCounter> {
   }
 
   void _resetCounter(bool up) async {
-    int first = widget.comment.note;
-    print("reset");
    final commentVote = await commentViewModel.fetchUserVoteByCommentId(widget.comment.id);
-    //print(commentVote);
+
    final response = await commentVoteService.deleteUserVoteForComment(commentVote);
-  
-   print(response.statusCode);
+
    if(response.statusCode == 200 || response.statusCode == 201) {
      setState(() {
-       widget.counter = first;
+      widget.counter = commentVote.upvote ? widget.counter - 1 : widget.counter + 1;
      });
    }
   }

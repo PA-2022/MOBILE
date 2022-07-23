@@ -1,9 +1,11 @@
 import 'package:codeup/entities/comment.dart';
 import 'package:codeup/services/comment_service.dart';
+import 'package:codeup/ui/home/viewModel/home_view_model.dart';
 import 'package:flutter/material.dart';
 import 'package:codeup/ui/comment/viewModel/comment_view_model.dart';
 import 'package:http/http.dart';
 
+import '../../entities/post.dart';
 import '../../services/auth_service.dart';
 import '../authentication/sign_in/sign_in_screen.dart';
 import '../common/custom_colors.dart';
@@ -21,15 +23,17 @@ class CommentListScreen extends StatefulWidget {
 }
 
 class _CommentListScreenState extends State<CommentListScreen> {
+  HomeViewModel homeViewModel = HomeViewModel();
   CommentService commentService = CommentService();
   CommentViewModel commentViewModel = CommentViewModel();
   final commentController = TextEditingController();
   late String responseContent;
 
   @override
-  void initState() {
+  void initState()  {
+    
     widget.post = PostBox(widget.post.post, widget.post.languages,
-        widget.post.votes, widget.post.isSaved, widget.post.commiter, false);
+        0, widget.post.isSaved, widget.post.commiter, false);
     responseContent = "";
     super.initState();
   }

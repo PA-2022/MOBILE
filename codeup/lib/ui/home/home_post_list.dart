@@ -33,7 +33,7 @@ class _PostBoxListState extends State<PostBoxList> {
         future: AuthService.currentUser != null ? homeViewModel.fetchHomePosts() : homeViewModel.fetchPosts(), //posts,
         builder: (BuildContext context, AsyncSnapshot<List<PostBox>> snapshot) {
           return snapshot.data != null
-              ? (snapshot.data!.length != 0
+              ? (snapshot.data!.isNotEmpty
                   ? Consumer<CustomAppBar>(builder: (context, appBar, child) {
                       return RefreshIndicator(
                         onRefresh: () {

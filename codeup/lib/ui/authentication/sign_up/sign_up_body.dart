@@ -1,14 +1,18 @@
+import 'package:codeup/ui/common/image_picker_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../../../services/auth_service.dart';
 import '../../../utils/sign_in_field_enum.dart';
 import '../../common/custom_colors.dart';
 import '../viewModel/sign_in_fields_view_model.dart';
 import '../viewModel/soft_keyboard_view_model.dart';
 import '../../../utils/extensions.dart';
+import 'sign_up_bottom.dart';
 
 class SignUpBody extends StatefulWidget {
-  const SignUpBody({Key? key}) : super(key: key);
+  final ImagePickerWidget imagePickerWidget;
+  const SignUpBody(this.imagePickerWidget, {Key? key}) : super(key: key);
 
   @override
   State<SignUpBody> createState() => _SignUpBodyState();
@@ -74,13 +78,7 @@ class _SignUpBodyState extends State<SignUpBody> {
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: <Widget>[
-        Padding(
-            padding: const EdgeInsets.all(0.0),
-            child: Image.network(
-              "https://cdn-icons-png.flaticon.com/512/3135/3135715.png",
-              height: 120,
-            )),
+      children: <Widget>[widget.imagePickerWidget,
         _buildUsername(context, inputTextStyle, border, enabledBorder,
             errorBorder, focusedBorder, focusedBorderError, textFieldHeight),
         _buildFirstname(context, inputTextStyle, border, enabledBorder,
@@ -91,6 +89,8 @@ class _SignUpBodyState extends State<SignUpBody> {
             focusedBorder, focusedBorderError, textFieldHeight),
         _buildPassword(context, inputTextStyle, border, enabledBorder,
             errorBorder, focusedBorder, focusedBorderError, textFieldHeight),
+            SignUpBottom(ancestorContext: context, authService: AuthService(signInFieldsVm: SignInFieldsViewModel()), photos : widget.imagePickerWidget.galleryItems)
+                
       ],
     );
   }

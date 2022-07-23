@@ -1,3 +1,4 @@
+import 'package:codeup/ui/common/image_picker_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -9,17 +10,17 @@ import 'sign_up_bottom.dart';
 
 class SignUpScreen extends StatefulWidget {
   static const routeName = "/sign-up";
-
-  const SignUpScreen({Key? key}) : super(key: key);
+  const SignUpScreen( {Key? key}) : super(key: key);
 
   @override
   State<SignUpScreen> createState() => _SignUpScreenState();
 }
 
 class _SignUpScreenState extends State<SignUpScreen> {
+  
   final SoftKeyboardViewModel _softKeyboardVm = SoftKeyboardViewModel();
   final SignInFieldsViewModel _signInFieldsVm = SignInFieldsViewModel();
-
+  final ImagePickerWidget imagePickerWidget = ImagePickerWidget();
   @override
   Widget build(BuildContext context) {
     
@@ -69,12 +70,11 @@ class _SignUpScreenState extends State<SignUpScreen> {
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  const SignUpBody(),
+                  SignUpBody(imagePickerWidget),
                   Flexible(
                     child: Container(), 
                   ), 
-                  SignUpBottom(ancestorContext: context, authService: authService)
-                ],
+                  ],
               ),
             ))
       ],

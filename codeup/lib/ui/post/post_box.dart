@@ -1,4 +1,6 @@
 import 'package:codeup/services/post_service.dart';
+import 'package:codeup/ui/home/home_screen.dart';
+import 'package:codeup/ui/home/viewModel/home_view_model.dart';
 import 'package:flutter/material.dart';
 
 import '../../entities/person.dart';
@@ -39,9 +41,11 @@ class _PostBoxState extends State<PostBox> {
   AuthService authService = AuthService();
   PostViewModel postViewModel = PostViewModel();
   PostVoteService postVoteService = PostVoteService();
+  HomeViewModel homeViewModel = HomeViewModel();
 
   @override
   void initState() {
+    
     super.initState();
   }
 
@@ -217,7 +221,10 @@ class _PostBoxState extends State<PostBox> {
     });
   }
 
-  _openComments(BuildContext context) {
+  _openComments(BuildContext context) async {
+    Post newPost = await homeViewModel.fetchPostById(widget.post.id);
+    widget.post = newPost;
+    
     Navigator.of(context).push(MaterialPageRoute(builder: (_) {
       return CommentListScreen(widget);
     }));
