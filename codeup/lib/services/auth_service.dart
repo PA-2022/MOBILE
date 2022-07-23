@@ -6,7 +6,6 @@ import 'package:flutter_dotenv/flutter_dotenv.dart' as dotenv;
 import '../entities/person.dart';
 import '../ui/authentication/viewModel/sign_in_fields_view_model.dart';
 import '../entities/user.dart';
-import '../ui/common/test_data.dart';
 import 'secure_storage.dart';
 
 class AuthService {
@@ -32,8 +31,6 @@ class AuthService {
       users.add(user);
     }
 
-    final _random = Random();
-    int randomNumber(int min, int max) => min + _random.nextInt(max - min);
     User loggedUser =
         users.firstWhere((user) => user.username == userFields.username);
     currentUser = Person(loggedUser,"http://elasticbeanstalk-eu-west-1-766564147455.s3.eu-west-1.amazonaws.com/avatar.png");// + photo!

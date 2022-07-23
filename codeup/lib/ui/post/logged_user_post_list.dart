@@ -21,7 +21,10 @@ class LoggedUserPostList extends StatelessWidget with ChangeNotifier {
         future: homeViewModel.fetchLoggedUserPosts(id),
         builder: (BuildContext context, AsyncSnapshot<List<PostBox>> snapshot) {
           return snapshot.data != null
-              ? Consumer<CustomAppBar>(builder: (context, appBar, child) {
+              ? (snapshot.data!.isNotEmpty ?
+                Consumer<CustomAppBar>(builder: (context, appBar, child) {
+                  
+
                   return RefreshIndicator(
                     onRefresh: () async {
                       await _refreshPosts();
@@ -38,7 +41,15 @@ class LoggedUserPostList extends StatelessWidget with ChangeNotifier {
                       ],
                     ),
                   );
-                })
+                }) :const Center(
+                    child: Text(
+                        "No posts to show",
+                        style: TextStyle(
+                            color: CustomColors.darkText,
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold),
+                      ),
+                  ))
               : Container(
                   alignment: Alignment.center,
                   child: const CircularProgressIndicator(
