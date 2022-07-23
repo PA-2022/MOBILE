@@ -56,7 +56,6 @@ class HomeViewModel with ChangeNotifier {
 
     await forumViewModel.fetchForumsOfUser().then((data) async {
       for (ForumListItem forumListItem in data) {
-            print("element");
 
         await postService.fetchPostsByForumId(forumListItem.forum.id).then((data) async {
 
@@ -69,12 +68,14 @@ class HomeViewModel with ChangeNotifier {
                 false,
                 await postViewModel.getCommiter(post),
                 true);
+                print(postBoxWidget.post.title);
             allPosts.add(postBoxWidget);
           }
         });
       }
     });
-    return allPosts;
+    allPosts.sort((a, b) => a.post.id.compareTo(b.post.id));
+    return allPosts.reversed.toList();
   }
 
   Future<List<PostBox>> fetchWantedPosts(String searchBarValue) async {

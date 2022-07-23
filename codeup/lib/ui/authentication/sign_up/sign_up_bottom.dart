@@ -7,7 +7,7 @@ import '../../../entities/user.dart';
 import '../../../services/auth_service.dart';
 import '../../../utils/sign_in_field_enum.dart';
 import '../../common/custom_colors.dart';
-import '../../component/adaptive_button.dart';
+import '../../common/adaptive_button.dart';
 import '../sign_in/sign_in_screen.dart';
 import '../viewModel/sign_in_fields_view_model.dart';
 import '../viewModel/soft_keyboard_view_model.dart';

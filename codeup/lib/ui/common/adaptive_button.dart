@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 
 import '../../utils/sign_in_state_enum.dart';
 import '../../utils/pair.dart';
-import '../common/custom_colors.dart';
+import 'custom_colors.dart';
 
 enum ButtonType { primary, secondary }
 

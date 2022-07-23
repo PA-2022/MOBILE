@@ -70,22 +70,24 @@ class _CreateForumScreenState extends State<CreateForumScreen> {
                         child: GestureDetector(
                           onTap: () => showDialog(
                               context: context,
-                              builder: (context) => AlertDialog(
-                                      title: const Text("Pick a color"),
-                                      content: ColorPicker(
-                                        pickerColor: pickerColor,
-                                        onColorChanged: _changeColor,
-                                      ),
-                                      actions: <Widget>[
-                                        ElevatedButton(
-                                            onPressed: () {
-                                              setState(() {
-                                                currentColor = pickerColor;
-                                                Navigator.of(context).pop();
-                                              });
-                                            },
-                                            child: const Text("Ok"))
-                                      ])),
+                              builder: (context) => Wrap(
+                                children: [AlertDialog(
+                                        title: const Text("Pick a color"),
+                                        content: ColorPicker(
+                                          pickerColor: pickerColor,
+                                          onColorChanged: _changeColor,
+                                        ),
+                                        actions: <Widget>[
+                                          ElevatedButton(
+                                              onPressed: () {
+                                                setState(() {
+                                                  currentColor = pickerColor;
+                                                  Navigator.of(context).pop();
+                                                });
+                                              },
+                                              child: const Text("Ok"))
+                                        ]),]
+                              )),
                           child: Container(
                             child: Row(
                               children: [

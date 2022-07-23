@@ -49,7 +49,8 @@ class _FriendsListState extends State<FriendsList> {
                                         .getUserById(friend.friend.friend_id),
                                     builder: (BuildContext context,
                                         AsyncSnapshot<User> userFriend) {
-                                      return  snapshot.data != null ? (userFriend.data!.firstname
+                                          
+                                      return userFriend.data != null ? (userFriend.data!.firstname
                                                   .toLowerCase()
                                                   .contains(appBar.valueSearch
                                                       .toLowerCase()) ||
@@ -60,13 +61,7 @@ class _FriendsListState extends State<FriendsList> {
                                               userFriend.data!.username
                                                   .toLowerCase()
                                                   .contains(appBar.valueSearch
-                                                      .toLowerCase()))
-                                          ? friend
-                                          : Container() : Container(
-                    alignment: Alignment.center,
-                    child: const CircularProgressIndicator(
-                      color: CustomColors.mainYellow,
-                    ));
+                                                      .toLowerCase()) ? friend : Container()) : Container();
                                     })
                             ],
                           );
