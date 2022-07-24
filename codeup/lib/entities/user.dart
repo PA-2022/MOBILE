@@ -5,8 +5,10 @@ class User {
   final String username;
   final String firstname;
   final String lastname;
+  final String profilePictureUrl;
+  final String profilePictureName;
 
-  const User(this.id, this.email, this.password, this.username, this.firstname, this.lastname);
+  const User(this.id, this.email, this.password, this.username, this.firstname, this.lastname, this.profilePictureUrl, this.profilePictureName);
 
 factory User.fromJson(Map<String, dynamic> json) {
     return User(
@@ -16,6 +18,8 @@ factory User.fromJson(Map<String, dynamic> json) {
       json['username'],
       json['firstname'],
       json['lastname'],
+      json['profilePictureUrl'],
+      json['profilePictureName'],
     );
   }
  @override

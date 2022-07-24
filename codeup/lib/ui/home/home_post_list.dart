@@ -40,16 +40,22 @@ class _PostBoxListState extends State<PostBoxList> {
                           return Navigator.of(context).pushReplacement(
                               MaterialPageRoute(builder: (_) => HomeScreen()));
                         },
-                        child: ListView(
-                          children: [
-                            for (PostBox post in snapshot.data as List<PostBox>)
-                              (post.post.title.toLowerCase().contains(
-                                          appBar.valueSearch.toLowerCase()) ||
-                                      post.post.content.toLowerCase().contains(
-                                          appBar.valueSearch.toLowerCase()))
-                                  ? post
-                                  : Container()
-                          ],
+                        child: Container(
+                          
+                          height: MediaQuery.of(context).size.height * 7/9,
+                          child: ListView(
+                            
+                            children: [
+                              for (PostBox post in snapshot.data as List<PostBox>)
+                              
+                                (post.postContent.post.title.toLowerCase().contains(
+                                            appBar.valueSearch.toLowerCase()) ||
+                                        post.postContent.post.content.toLowerCase().contains(
+                                            appBar.valueSearch.toLowerCase()))
+                                    ? post
+                                    : Container()
+                            ],
+                          ),
                         ),
                       );
                     })

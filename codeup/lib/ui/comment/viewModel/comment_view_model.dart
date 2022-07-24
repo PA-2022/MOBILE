@@ -97,7 +97,6 @@ class CommentViewModel with ChangeNotifier {
     await commentVoteService.fetchUserVoteByCommentId(commentId).then((data) async {
       if (jsonDecode(data.body) != null) {
         commentVote = CommentVote.fromJson(jsonDecode(data.body));
-        print(data.body);
       }
     });
     //print(commentVote);

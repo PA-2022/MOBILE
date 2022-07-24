@@ -33,7 +33,7 @@ class AuthService {
 
     User loggedUser =
         users.firstWhere((user) => user.username == userFields.username);
-    currentUser = Person(loggedUser,"http://elasticbeanstalk-eu-west-1-766564147455.s3.eu-west-1.amazonaws.com/avatar.png");// + photo!
+    currentUser = Person(loggedUser,"");// + photo!
     return currentUser;
   }
 
@@ -69,7 +69,6 @@ class AuthService {
         'password': user.password
       }),
     );
-print(response.body);
     return response;
   }
 
@@ -85,7 +84,9 @@ print(response.body);
         'password': user.password,
         'email': user.email,
         'firstname': user.firstname,
-        'lastname': user.lastname
+        'lastname': user.lastname,
+        'profilePictureUrl': user.profilePictureUrl + user.profilePictureName,
+        'profilePictureName': user.profilePictureName
       }),
     );
     return response;

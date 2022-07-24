@@ -15,15 +15,7 @@ class FriendViewModel with ChangeNotifier {
 
   Future<List<FriendsListItem>> fetchFriendsOfUser() async {
     List<FriendsListItem> allFriends = [];
-    //await userFriendRelationService.fetchRelationsOfUser().then((data) async {
-      
-       FriendsListItem friend1= FriendsListItem(Friend(AuthService.currentUser!.user.id, 1, true));
-       FriendsListItem friend2= FriendsListItem(Friend(AuthService.currentUser!.user.id, 1, true));
-        
-        allFriends.add(friend1);
-        allFriends.add(friend2);
-
-    //}); 
+    
     return allFriends..toList();
   }
 

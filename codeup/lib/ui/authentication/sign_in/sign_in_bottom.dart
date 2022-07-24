@@ -130,7 +130,7 @@ class _SignInBottomState extends State<SignInBottom> {
   void _submitAuthentication(SignInFieldsViewModel signInFieldsVm) async {
     if (_validateLoginFields(signInFieldsVm)) {
       final user = User(-1, "", signInFieldsVm.tPasswordController.text,
-          signInFieldsVm.tLoginController.text, "", "");
+          signInFieldsVm.tLoginController.text, "", "","","");
 
       http.Response response =
           await widget.authService.logIn(signInFieldsVm, user);

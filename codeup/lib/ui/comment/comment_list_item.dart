@@ -125,9 +125,8 @@ class _CommentListItemState extends State<CommentListItem> {
                                   
                                   SizedBox(
                                     height: 25,
-                                    child: CircleAvatar(
-                                        backgroundImage: NetworkImage(widget.commiter.photoUrl),
-                                        radius: 15),
+                                    child: Image(
+                                        image: NetworkImage(widget.commiter.user.profilePictureUrl)),
                                   ),
                                   
                                   Padding(
@@ -179,7 +178,6 @@ class _CommentListItemState extends State<CommentListItem> {
      Response response = await commentService.updateComment(
         comment, 
         AuthService.currentUser!);
-        print(response.body);
     if (response.statusCode == 200 || response.statusCode == 201) {
       setState(() {
       editMode = false;

@@ -1,5 +1,6 @@
 import 'package:codeup/ui/common/gallery_item.dart';
 import 'package:codeup/ui/common/image_picker_widget.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart' as dotenv;
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -151,10 +152,13 @@ class _SignUpBottomState extends State<SignUpBottom> {
         signInFieldsVm.tPasswordController.text,
         signInFieldsVm.tUsernameController.text,
         signInFieldsVm.tFirstnameController.text,
-        signInFieldsVm.tLastnameController.text);
+        signInFieldsVm.tLastnameController.text,
+        widget.photos.isNotEmpty ? dotenv.env["BUCKET_URL"].toString() : "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460__340.png",
+        widget.photos.isNotEmpty ? widget.photos[0].name : ""
+        );
 
     if (_validateSignUpFields(signInFieldsVm)) {
-      /* final response = await widget.authService.register(signInFieldsVm, user);
+      final response = await widget.authService.register(signInFieldsVm, user);
 
       if (response.statusCode == 200 || response.statusCode == 201) {
         //widget.authService.logIn(signInFieldsVm, user);
@@ -174,7 +178,7 @@ class _SignUpBottomState extends State<SignUpBottom> {
           backgroundColor: CustomColors.redText,
         );
         ScaffoldMessenger.of(context).showSnackBar(snackBar);
-      } */
+      }
     }
   }
 

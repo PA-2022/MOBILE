@@ -4,7 +4,9 @@ import 'package:codeup/ui/forums/forum_list_item.dart';
 import 'package:codeup/ui/forums/viewModel/forum_view_model.dart';
 import 'package:flutter/material.dart';
 
+import '../../../entities/content_post.dart';
 import '../../../entities/post.dart';
+import '../../../entities/post_content.dart';
 import '../../../services/post_service.dart';
 import '../../common/language_enum.dart';
 import '../../post/post_box.dart';
@@ -19,11 +21,19 @@ class HomeViewModel with ChangeNotifier {
     List<PostBox> allPosts = [];
     await forumViewModel.fetchForums().then((data) async {
       for (ForumListItem forumListItem in data) {
-        await postService.fetchPostsByForumId(forumListItem.forum.id).then((data) async {
+        await postService
+            .fetchPostsByForumId(forumListItem.forum.id)
+            .then((data) async {
           for (dynamic element in jsonDecode(data.body)) {
             Post post = Post.fromJson(element);
+
+            List<ContentPost> contentPosts =
+                await postViewModel.fetchContentByPostId(post.id);
+
+            PostContent postContent = PostContent(post, contentPosts);
+
             PostBox postBoxWidget = PostBox(
-                post,
+                postContent,
                 const [LanguageValue.C, LanguageValue.JAVA],
                 post.userId,
                 false,
@@ -34,47 +44,52 @@ class HomeViewModel with ChangeNotifier {
         });
       }
     });
-    
-    return allPosts;
+    allPosts
+        .sort((a, b) => a.postContent.post.id.compareTo(b.postContent.post.id));
+    return allPosts.reversed.toList();
   }
 
   Future<Post> fetchPostById(int postId) async {
     Post post = Post(-1, "", "", "", -1, -1, null, -1);
 
     await forumViewModel.fetchForums().then((data) async {
-     
-        await postService.fetchPostById(postId).then((data) async {
-          post = Post.fromJson(jsonDecode(data.body));
-          
-        });
+      await postService.fetchPostById(postId).then((data) async {
+        post = Post.fromJson(jsonDecode(data.body));
+      });
     });
     return post;
   }
 
   Future<List<PostBox>> fetchHomePosts() async {
     List<PostBox> allPosts = [];
-
     await forumViewModel.fetchForumsOfUser().then((data) async {
       for (ForumListItem forumListItem in data) {
-
-        await postService.fetchPostsByForumId(forumListItem.forum.id).then((data) async {
-
+        await postService
+            .fetchPostsByForumId(forumListItem.forum.id)
+            .then((data) async {
           for (dynamic element in jsonDecode(data.body)) {
             Post post = Post.fromJson(element);
+
+            List<ContentPost> contentPosts =
+                await postViewModel.fetchContentByPostId(post.id);
+
+            PostContent postContent = PostContent(post, contentPosts);
+
             PostBox postBoxWidget = PostBox(
-                post,
+                postContent,
                 const [LanguageValue.C, LanguageValue.JAVA],
                 post.userId,
                 false,
                 await postViewModel.getCommiter(post),
                 true);
-                print(postBoxWidget.post.title);
             allPosts.add(postBoxWidget);
           }
         });
       }
     });
-    allPosts.sort((a, b) => a.post.id.compareTo(b.post.id));
+    allPosts
+        .sort((a, b) => a.postContent.post.id.compareTo(b.postContent.post.id));
+        
     return allPosts.reversed.toList();
   }
 
@@ -83,8 +98,14 @@ class HomeViewModel with ChangeNotifier {
     await postService.fetchPosts().then((data) async {
       for (dynamic element in jsonDecode(data.body)) {
         Post post = Post.fromJson(element);
+
+        List<ContentPost> contentPosts =
+            await postViewModel.fetchContentByPostId(post.id);
+
+        PostContent postContent = PostContent(post, contentPosts);
+
         PostBox postBoxWidget = PostBox(
-            post,
+            postContent,
             const [LanguageValue.C, LanguageValue.JAVA],
             post.userId,
             false,
@@ -102,13 +123,13 @@ class HomeViewModel with ChangeNotifier {
   Future<List<PostBox>> fetchLoggedUserPosts(int id) async {
     List<PostBox> allPosts = [];
     await HomeViewModel().fetchPosts().then((posts) {
-      for(PostBox post in posts) {
-        if(post.post.userId == id) {
+      for (PostBox post in posts) {
+        if (post.postContent.post.userId == id) {
           allPosts.add(post);
         }
       }
     });
-  
+
     return allPosts;
   }
 }

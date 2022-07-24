@@ -27,7 +27,7 @@ void main() async {
   await dotenv.load();
   runApp(MyApp("sign-in"));
 }
-
+//TODO : edit post, s3 ask public ?, pb postvote, dmd quoi sur page daccueil
 class MyApp extends StatelessWidget {
   final String launchRoute;
   Person? currentUser = AuthService.currentUser;

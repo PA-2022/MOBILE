@@ -46,7 +46,7 @@ Widget _loggedMenuOptions(BuildContext context, Person currentUser) {
                 Align(
                   alignment: Alignment.center,
                   child: Image.network(
-                    currentUser.photoUrl,
+                    currentUser.user.profilePictureUrl,
                     height: 140,
                   ),
                 ),

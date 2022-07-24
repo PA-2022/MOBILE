@@ -80,7 +80,7 @@ class _ProfileUnLoggedBodyState extends State<ProfileUnLoggedBody> {
                   Padding(
                     padding: const EdgeInsets.all(10.0),
                     child: Image.network(
-                      widget.wantedUser.photoUrl,
+                      widget.wantedUser.user.profilePictureUrl,
                       height: 120,
                     ),
                   ),

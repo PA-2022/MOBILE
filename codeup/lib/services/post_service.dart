@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:codeup/entities/post_content.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter_dotenv/flutter_dotenv.dart' as dotenv;
 
@@ -17,7 +18,6 @@ class PostService {
   PostService();
 
   Future<http.Response> fetchPosts() async {
-
     final response =
         await http.get(Uri.parse(apiUrl + "posts/all/limit/100/offset/0"));
 
@@ -27,6 +27,12 @@ class PostService {
   Future<http.Response> fetchPostById(int postId) async {
     final response =
         await http.get(Uri.parse(apiUrl + "posts/" + postId.toString()));
+    return response;
+  }
+
+  Future<http.Response> fetchContentById(int postId) async {
+    final response =
+        await http.get(Uri.parse(apiUrl + "posts/" + postId.toString() + "/content"));
     return response;
   }
 
@@ -46,7 +52,7 @@ class PostService {
     return response;
   }
 
-  Future<http.Response> addPost(Post post, Person user) async {
+  Future<http.Response> addPost(PostContent postContent, Person user) async {
     String token = "";
     token = await SecureStorageService.getInstance()
         .get("token")
@@ -58,16 +64,26 @@ class PostService {
         'cookie': token,
       },
       body: jsonEncode({
-        'title': post.title,
-        'content': post.content,
-        'forumId': post.forumId,
-        'code': post.code,
-        'userId': user.user.id
+        'post': {
+          'title': postContent.post.title,
+          'content': postContent.post.content,
+          'forumId': postContent.post.forumId,
+          'code': postContent.post.code,
+          'userId': user.user.id
+        },
+        'contentPost': [
+          {
+              'content': postContent.contentPost[0].content,
+              'post_id': postContent.contentPost[0].postId,
+              'type': postContent.contentPost[0].type,
+              'postition': postContent.contentPost[0].position
+          }
+        ]
       }),
     );
     return response;
   }
-
+//TODO: update post avec postContent
   Future<http.Response> updatePost(Post post, Person user) async {
     String token = "";
     token = await SecureStorageService.getInstance()

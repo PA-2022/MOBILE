@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 
 import '../../entities/person.dart';
 import '../../entities/post.dart';
+import '../../entities/post_content.dart';
 import '../../entities/post_vote.dart';
 import '../../services/auth_service.dart';
 import '../../services/post_vote_service.dart';
@@ -22,13 +23,13 @@ import 'viewModel/post_view_model.dart';
 import 'post_votes_counter.dart';
 
 class PostBox extends StatefulWidget {
-  Post post;
+  PostContent postContent;
   final List<LanguageValue> languages;
   int votes;
   bool isSaved;
   Person commiter;
   bool areCommentsVisible;
-  PostBox(this.post, this.languages, this.votes, this.isSaved, this.commiter,
+  PostBox(this.postContent, this.languages, this.votes, this.isSaved, this.commiter,
       this.areCommentsVisible,
       {Key? key})
       : super(key: key);
@@ -52,8 +53,8 @@ class _PostBoxState extends State<PostBox> {
   @override
   Widget build(BuildContext context) {
     CommentViewModel commentViewModel = CommentViewModel();
-    commentViewModel.getCommentCount(widget.post);
-    var response = postViewModel.userHasVoted(widget.post);
+    commentViewModel.getCommentCount(widget.postContent.post);
+    var response = postViewModel.userHasVoted(widget.postContent.post);
     
     return Padding(
       padding: const EdgeInsets.only(bottom: 10, left: 10, right: 10),
@@ -81,13 +82,16 @@ class _PostBoxState extends State<PostBox> {
                       children: [
                         Padding(
                           padding: const EdgeInsets.only(
-                              left: 10, top: 10, bottom: 10),
+                              left: 10, top: 10, bottom: 10, right: 10),
                           child: SizedBox(
-                            height: 40,
-                            child: CircleAvatar(
+                            height: 47,
+                            child: SizedBox(
+                        height: 100,
+                        child: Image(image: NetworkImage(widget.commiter.user.profilePictureUrl!= null ? widget.commiter.user.profilePictureUrl : "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460__340.png")),
+                      ),/* CircleAvatar(
                                 backgroundImage:
-                                    NetworkImage(widget.commiter.photoUrl),
-                                radius: 30),
+                                    NetworkImage(widget.commiter.user.profilePictureUrl!= null ? widget.commiter.user.profilePictureUrl : "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460__340.png"),
+                                radius: 30), */
                           ),
                         ),
                         Column(
@@ -103,7 +107,7 @@ class _PostBoxState extends State<PostBox> {
                             ),
                             Text(
                               DateHelper.formatDate(
-                                  widget.post.creationDate.toString()),
+                                  widget.postContent.post.creationDate.toString()),
                               style: const TextStyle(
                                   fontSize: 15, color: Colors.grey),
                             ),
@@ -113,7 +117,7 @@ class _PostBoxState extends State<PostBox> {
                     ),
                   ),
                   if (AuthService.currentUser != null &&
-                      AuthService.currentUser!.user.id == widget.post.userId)
+                      AuthService.currentUser!.user.id == widget.postContent.post.userId)
                     Padding(
                       padding: const EdgeInsets.only(right: 10),
                       child: IconButton(
@@ -124,7 +128,7 @@ class _PostBoxState extends State<PostBox> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
               ),
               Text(
-                widget.post.title,
+                widget.postContent.post.title,
                 style: const TextStyle(
                   fontWeight: FontWeight.bold,
                   fontSize: 18,
@@ -134,15 +138,15 @@ class _PostBoxState extends State<PostBox> {
                 padding: const EdgeInsets.only(left: 5),
                 child: Row(children: [
                   //for (LanguageValue language in widget.languages)
-                    PostLanguageText(widget.post.forumId),
+                    PostLanguageText(widget.postContent.post.forumId),
                 ]),
               ),
               Padding(
                 padding: const EdgeInsets.only(left: 10),
                 child: Row(
                   children: [
-                    VotesCounter(widget.post.note, widget.post),
-                    Flexible(child: TextViewer(widget.post.content)),
+                    VotesCounter(widget.postContent.post.note, widget.postContent.post),
+                    Flexible(child:  TextViewer(widget.postContent.contentPost[0].content)),
                   ],
                 ),
               ),
@@ -154,7 +158,7 @@ class _PostBoxState extends State<PostBox> {
                       GestureDetector(
                         child: FutureBuilder(
                             future:
-                                commentViewModel.getCommentCount(widget.post),
+                                commentViewModel.getCommentCount(widget.postContent.post),
                             builder: (BuildContext context,
                                 AsyncSnapshot<String> snapshot) {
                               return PostBoxAction(
@@ -186,7 +190,7 @@ class _PostBoxState extends State<PostBox> {
 
   _upvote() async {
     final response = await postVoteService.editUserVoteForPost
-    (PostVote(-1,true,widget.post.id, AuthService.currentUser!.user.id ));
+    (PostVote(-1,true,widget.postContent.post.id, AuthService.currentUser!.user.id ));
     if(response.statusCode == 200 || response.statusCode == 201) {
       
     }
@@ -222,8 +226,8 @@ class _PostBoxState extends State<PostBox> {
   }
 
   _openComments(BuildContext context) async {
-    Post newPost = await homeViewModel.fetchPostById(widget.post.id);
-    widget.post = newPost;
+    Post newPost = await homeViewModel.fetchPostById(widget.postContent.post.id);
+    widget.postContent.post = newPost;
     
     Navigator.of(context).push(MaterialPageRoute(builder: (_) {
       return CommentListScreen(widget);

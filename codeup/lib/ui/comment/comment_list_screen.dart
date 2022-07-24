@@ -32,7 +32,7 @@ class _CommentListScreenState extends State<CommentListScreen> {
   @override
   void initState()  {
     
-    widget.post = PostBox(widget.post.post, widget.post.languages,
+    widget.post = PostBox(widget.post.postContent, widget.post.languages,
         0, widget.post.isSaved, widget.post.commiter, false);
     responseContent = "";
     super.initState();
@@ -52,9 +52,9 @@ class _CommentListScreenState extends State<CommentListScreen> {
   void sendResponse() async {
     Response response = await commentService.addComment(
         Comment(-1, commentController.text, null,
-            AuthService.currentUser!.user.id, "?", widget.post.post.id, null, 0), 
+            AuthService.currentUser!.user.id, "?", widget.post.postContent.post.id, null, 0), 
         AuthService.currentUser!,
-        widget.post.post);
+        widget.post.postContent.post);
 
     if (response.statusCode == 200 || response.statusCode == 201) {
       FocusScope.of(context).requestFocus(FocusNode());
@@ -126,7 +126,7 @@ class _CommentListScreenState extends State<CommentListScreen> {
 
   Widget _getBody() {
     return FutureBuilder(
-        future: commentViewModel.fetchComments(widget.post.post.id),
+        future: commentViewModel.fetchComments(widget.post.postContent.post.id),
         builder: (BuildContext context,
             AsyncSnapshot<List<CommentListItem>> snapshot) {
           return snapshot.data != null

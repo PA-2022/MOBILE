@@ -65,13 +65,13 @@ class _ImagePickerWidgetState extends State<ImagePickerWidget> {
             },
           ),
         ),
-        Container(
+      /*   Container(
           margin: EdgeInsets.all(16),
           child: RaisedButton(
             child: Text('Save'),
             onPressed: () {},
           ),
-        )
+        ) */
       ],
     );
   }

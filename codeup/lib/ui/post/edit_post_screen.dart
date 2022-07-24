@@ -43,9 +43,9 @@ class _EditPostScreenState extends State<EditPostScreen> {
 
   @override
   void initState() {
-    titleController.text = widget.post.post.title;
-    contentController.text = widget.post.post.content;
-    selectedForum = widget.post.post.forumId.toString();
+    titleController.text = widget.post.postContent.post.title;
+    contentController.text = widget.post.postContent.post.content;
+    selectedForum = widget.post.postContent.post.forumId.toString();
     super.initState();
   }
 
@@ -68,7 +68,7 @@ class _EditPostScreenState extends State<EditPostScreen> {
                         height: 80,
                         child: CircleAvatar(
                             backgroundImage:
-                                NetworkImage(AuthService.currentUser!.photoUrl),
+                                NetworkImage(AuthService.currentUser!.user.profilePictureUrl),
                             radius: 50),
                       ),
                     ),
@@ -255,7 +255,7 @@ class _EditPostScreenState extends State<EditPostScreen> {
 
   _deletePost() async {
     final response =
-        await postService.deletePost(widget.post.post.id.toString());
+        await postService.deletePost(widget.post.postContent.post.id.toString());
 
     if (response.statusCode == 200 || response.statusCode == 201) {
       {
@@ -270,14 +270,14 @@ class _EditPostScreenState extends State<EditPostScreen> {
     final forumId = int.parse(selectedForum);
     final response = await postService.updatePost(
         Post(
-            widget.post.post.id,   
+            widget.post.postContent.post.id,   
             titleController.text,
             contentController.text,
-            widget.post.post.code,
+            widget.post.postContent.post.code,
             forumId,
             AuthService.currentUser!.user.id,
-            widget.post.post.creationDate,
-            widget.post.post.note),
+            widget.post.postContent.post.creationDate,
+            widget.post.postContent.post.note),
         AuthService.currentUser!);
 
     if (response.statusCode == 200 || response.statusCode == 201) {

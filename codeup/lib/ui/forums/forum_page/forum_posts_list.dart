@@ -27,7 +27,7 @@ class ForumPostsList extends StatelessWidget with ChangeNotifier {
                     child: Column(
                         children: [
                           for (PostBox post in snapshot.data as List<PostBox>) 
-                          (post.post.title.toLowerCase().contains(appBar.valueSearch.toLowerCase()) || post.post.content.toLowerCase().contains(appBar.valueSearch.toLowerCase())) ? post : Container()
+                          (post.postContent.post.title.toLowerCase().contains(appBar.valueSearch.toLowerCase()) || post.postContent.post.content.toLowerCase().contains(appBar.valueSearch.toLowerCase())) ? post : Container()
                         ],
                       ),
                   );

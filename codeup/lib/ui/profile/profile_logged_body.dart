@@ -126,7 +126,7 @@ class _ProfileLoggedBodyState extends State<ProfileLoggedBody> {
                   Padding(
                     padding: const EdgeInsets.all(10.0),
                     child: Image.network(
-                      currentUser!.photoUrl,
+                      currentUser!.user.profilePictureUrl,
                       height: 120,
                     ),
                   ),
@@ -490,7 +490,10 @@ class _ProfileLoggedBodyState extends State<ProfileLoggedBody> {
         currentUser!.user.password,
         _signInFieldsVm.tUsernameController.text,
         _signInFieldsVm.tFirstnameController.text,
-        _signInFieldsVm.tLastnameController.text);
+        _signInFieldsVm.tLastnameController.text,
+        currentUser!.user.profilePictureUrl,
+        currentUser!.user.profilePictureName
+        );
 
     print(userUpdated.id.toString() +
         " " +
@@ -509,7 +512,7 @@ class _ProfileLoggedBodyState extends State<ProfileLoggedBody> {
 
     if (response.statusCode == 200 || response.statusCode == 201) {
       {
-        AuthService.setCurrentUser(Person(userUpdated, currentUser!.photoUrl));
+        AuthService.setCurrentUser(Person(userUpdated, currentUser!.user.profilePictureUrl));
         Navigator.of(context).push(MaterialPageRoute(
             builder: (_) => ProfileScreen(AuthService.currentUser!, false)));
         const snackBar = SnackBar(

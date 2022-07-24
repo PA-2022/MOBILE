@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
+import '../../entities/content_post.dart';
 import '../../entities/post.dart';
+import '../../entities/post_content.dart';
 import '../../services/auth_service.dart';
 import '../../services/forum_service.dart';
 import '../../services/post_service.dart';
@@ -59,7 +61,7 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
       backgroundColor: background_color,
       body: CustomScrollView(
         slivers: [
-          CustomAppBar("Create a post", false, null),
+          CustomAppBar("Add a post", false, null),
           SliverList(
             delegate: SliverChildListDelegate([
               Padding(
@@ -70,10 +72,7 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
                       alignment: Alignment.center,
                       child: SizedBox(
                         height: 80,
-                        child: CircleAvatar(
-                            backgroundImage:
-                                NetworkImage(AuthService.currentUser!.photoUrl),
-                            radius: 50),
+                        child: Image(image: NetworkImage(AuthService.currentUser!.user.profilePictureUrl)),
                       ),
                     ),
                     if (widget.choosenForumId == null)
@@ -215,11 +214,17 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
   _submitPost() async {
 
     final forumId = widget.choosenForumId ?? int.parse(selectedForum);
-    final response = await postService.addPost(
-        Post(-1, titleController.text, contentController.text, "C", forumId,
-            AuthService.currentUser!.user.id, null, 0),
-        AuthService.currentUser!);
 
+    Post post = Post(-1, titleController.text, contentController.text, "C", forumId,
+            AuthService.currentUser!.user.id, null, 0);
+
+    ContentPost contentPost = ContentPost(-1, post.content, post.id, 0, 1);
+    List<ContentPost> contentPosts = [];
+    contentPosts.add(contentPost);
+    PostContent postContent = PostContent(post, contentPosts);
+
+    final response = await postService.addPost(postContent,
+        AuthService.currentUser!);
     if (response.statusCode == 200 || response.statusCode == 201) {
       if (widget.choosenForumId == null) {
         Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (_) {
