@@ -153,7 +153,7 @@ class _SignUpBottomState extends State<SignUpBottom> {
         signInFieldsVm.tUsernameController.text,
         signInFieldsVm.tFirstnameController.text,
         signInFieldsVm.tLastnameController.text,
-        widget.photos.isNotEmpty ? dotenv.env["BUCKET_URL"].toString() : "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460__340.png",
+        widget.photos.isNotEmpty ? dotenv.env["BUCKET_URL"].toString() + widget.photos[0].name : "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460__340.png",
         widget.photos.isNotEmpty ? widget.photos[0].name : ""
         );
 

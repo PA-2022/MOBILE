@@ -1,3 +1,6 @@
+import 'package:codeup/services/auth_service.dart';
+import 'package:codeup/services/friends_service.dart';
+import 'package:codeup/ui/home/home_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -7,6 +10,8 @@ import '../authentication/viewModel/sign_in_fields_view_model.dart';
 import '../authentication/viewModel/soft_keyboard_view_model.dart';
 import '../common/custom_app_bar.dart';
 import '../common/custom_colors.dart';
+import '../friends/friends_list_item.dart';
+import '../friends/viewModel/friend_view_model.dart';
 import '../menu/menu.dart';
 
 class ProfileUnLoggedBody extends StatefulWidget {
@@ -24,13 +29,13 @@ class ProfileUnLoggedBody extends StatefulWidget {
 class _ProfileUnLoggedBodyState extends State<ProfileUnLoggedBody> {
   final SoftKeyboardViewModel _softKeyboardVm = SoftKeyboardViewModel();
   final SignInFieldsViewModel _signInFieldsVm = SignInFieldsViewModel();
+  final FriendService friendService = FriendService();
   final FocusNode _usernameFocusNode = FocusNode();
   final FocusNode _firstnameFocusNode = FocusNode();
   final FocusNode _lastnameFocusNode = FocusNode();
   final FocusNode _emailFocusNode = FocusNode();
   // ignore: non_constant_identifier_names
   final background_color = CustomColors.white;
-
 
   @override
   void dispose() {
@@ -68,32 +73,81 @@ class _ProfileUnLoggedBodyState extends State<ProfileUnLoggedBody> {
 
     return CustomScrollView(
       slivers: [
-        CustomAppBar(widget.wantedUser.user.firstname + " " + widget.wantedUser.user.lastname,
-            false, null),
+        CustomAppBar(
+            widget.wantedUser.user.firstname +
+                " " +
+                widget.wantedUser.user.lastname,
+            false,
+            null),
         SliverList(
           delegate: SliverChildListDelegate([
             Padding(
               padding: const EdgeInsets.all(15.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: <Widget>[
-                  Padding(
-                    padding: const EdgeInsets.all(10.0),
-                    child: Image.network(
-                      widget.wantedUser.user.profilePictureUrl,
-                      height: 120,
-                    ),
-                  ),
-                  const Text("Username"),
-                  _buildUsername(textFieldHeight),
-                  const Text("Firstname"),
-                  _buildFirstname(textFieldHeight),
-                  const Text("Lastname"),
-                  _buildLastname(textFieldHeight),
-                  const Text("Email"),
-                  _buildEmail(textFieldHeight),
-                ],
-              ),
+              child: FutureBuilder(
+                  future: FriendViewModel().fetchFriendsOfUser(),
+                  builder: (BuildContext context,
+                      AsyncSnapshot<List<FriendsListItem>> snapshot) {
+                    return Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: <Widget>[
+                        Padding(
+                          padding: const EdgeInsets.all(10.0),
+                          child: Image.network(
+                            widget.wantedUser.user.profilePictureUrl,
+                            height: 120,
+                          ),
+                        ),
+                        const Text("Username"),
+                        _buildUsername(textFieldHeight),
+                        const Text("Firstname"),
+                        _buildFirstname(textFieldHeight),
+                        const Text("Lastname"),
+                        _buildLastname(textFieldHeight),
+                        const Text("Email"),
+                        _buildEmail(textFieldHeight),
+                        (snapshot.data != null
+                            ? ((AuthService.currentUser != null &&
+                                    AuthService.currentUser!.user.id !=
+                                        widget.wantedUser.user.id && snapshot.data!
+                                        .map((e) => e.userAndFriend.user.id).contains(widget.wantedUser.user.id) &&
+                                    snapshot.data!
+                                        .firstWhere((friendListItem) =>
+                                            friendListItem
+                                                .userAndFriend.user.id ==
+                                            widget.wantedUser.user.id)
+                                        .userAndFriend
+                                        .friend
+                                        .is_accepted)
+                                ? Padding(
+                                    padding: const EdgeInsets.only(
+                                        right: 17.0, top: 25),
+                                    child: Align(
+                                      child: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.end,
+                                        children: [
+                                          const Icon(
+                                            Icons.person_add_disabled,
+                                            color: CustomColors.redText,
+                                            size: 19,
+                                          ),
+                                          TextButton(
+                                              onPressed: () => _deleteFriend(),
+                                              child: const Text(
+                                                "Delete friend",
+                                                style: TextStyle(
+                                                    color: CustomColors.redText,
+                                                    fontSize: 15),
+                                              )),
+                                        ],
+                                      ),
+                                    ),
+                                  )
+                                : Container())
+                            : Container())
+                      ],
+                    );
+                  }),
             )
           ]),
         ),
@@ -220,4 +274,15 @@ class _ProfileUnLoggedBodyState extends State<ProfileUnLoggedBody> {
       _lastnameFocusNode.requestFocus();
     }
   }
+
+  _deleteFriend() async {
+    final response =
+        await friendService.deleteFriend(widget.wantedUser.user.id.toString());
+
+    if (response.statusCode == 200 || response.statusCode == 201) {
+      
+      Navigator.of(context)
+          .pushReplacement(MaterialPageRoute(builder: (_) => ProfileUnLoggedBody(widget.wantedUser, true)));
+  }
+}
 }

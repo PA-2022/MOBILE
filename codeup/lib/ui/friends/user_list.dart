@@ -7,43 +7,44 @@ import '../../services/auth_service.dart';
 import '../common/custom_app_bar.dart';
 import '../common/custom_colors.dart';
 import 'friends_list_item.dart';
+import 'user_list_item.dart';
 import 'viewModel/friend_view_model.dart';
 
-class FriendsList extends StatefulWidget {
+class UserList extends StatefulWidget {
   final CustomAppBar friendsTop;
-  const FriendsList(this.friendsTop, {Key? key}) : super(key: key);
+  const UserList(this.friendsTop, {Key? key}) : super(key: key);
 
   @override
-  _FriendsListState createState() => _FriendsListState();
+  _UserListState createState() => _UserListState();
 }
 
-class _FriendsListState extends State<FriendsList> {
+class _UserListState extends State<UserList> {
   FriendViewModel friendViewModel = FriendViewModel();
   // ignore: non_constant_identifier_names
   Color background_color = CustomColors.lightGrey3;
   bool isChecked = false;
-  late Future<List<FriendsListItem>> friends;
+  late Future<List<UserListItem>> friends;
   Color getColor(Set<MaterialState> states) {
     return CustomColors.mainYellow;
   }
 
   @override
   Widget build(BuildContext context) {
-    friends = friendViewModel.fetchFriendsOfUser();
+    friends = friendViewModel.fetchUsers();
     return ChangeNotifierProvider(
       create: (context) => widget.friendsTop,
       child: FutureBuilder(
           future: friends,
           builder: (BuildContext context,
-              AsyncSnapshot<List<FriendsListItem>> snapshot) {
+              AsyncSnapshot<List<UserListItem>> snapshot) {
             return snapshot.data != null
                 ? (snapshot.data!.isNotEmpty
                     ? Consumer<CustomAppBar>(builder: (context, appBar, child) {
                         return Builder(builder: (context) {
                           return Column(
                             children: [
-                              for (FriendsListItem friend
-                                  in snapshot.data as List<FriendsListItem>)
+                              for (UserListItem friend
+                                  in snapshot.data as List<UserListItem>)
                                   (friend.userAndFriend.user.firstname
                                                   .toLowerCase()
                                                   .contains(appBar.valueSearch
@@ -62,7 +63,7 @@ class _FriendsListState extends State<FriendsList> {
                       })
                     : const Center(
                         child: Text(
-                          "No friends to show",
+                          "No users to show",
                           style: TextStyle(
                               color: CustomColors.darkText,
                               fontSize: 18,

@@ -15,19 +15,12 @@ import 'ui/profile/profile_screen.dart';
 import 'ui/saved_posts/saved_posts_screen.dart';
 
 //TODO:
-/*
-
-
-Recherche amis
-
-Pull to refresh posts/forums
-*/
 
 void main() async {
   await dotenv.load();
   runApp(MyApp("sign-in"));
 }
-//TODO : edit post, s3 ask public ?, pb postvote, dmd quoi sur page daccueil
+//TODO : edit post, s3 ask public ?, dmd quoi sur page daccueil, delete friend
 class MyApp extends StatelessWidget {
   final String launchRoute;
   Person? currentUser = AuthService.currentUser;
