@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:codeup/ui/common/gallery_item.dart';
 import 'package:codeup/ui/common/image_picker_widget.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart' as dotenv;
@@ -16,10 +18,9 @@ import '../viewModel/soft_keyboard_view_model.dart';
 class SignUpBottom extends StatefulWidget {
   final AuthService authService;
   final BuildContext ancestorContext;
-  final List<GalleryItem> photos;
 
   const SignUpBottom(
-      {Key? key, required this.ancestorContext, required this.authService, required this.photos})
+      {Key? key, required this.ancestorContext, required this.authService})
       : super(key: key);
 
   @override
@@ -145,7 +146,7 @@ class _SignUpBottomState extends State<SignUpBottom> {
   }
 
   void _submitAuthentication(SignInFieldsViewModel signInFieldsVm) async {
-    AuthService.photo = widget.photos[0].name;
+    //AuthService.photo = widget.photos[0].name;
     final user = User(
         -1,
         signInFieldsVm.tLoginController.text,
@@ -153,9 +154,10 @@ class _SignUpBottomState extends State<SignUpBottom> {
         signInFieldsVm.tUsernameController.text,
         signInFieldsVm.tFirstnameController.text,
         signInFieldsVm.tLastnameController.text,
-        widget.photos.isNotEmpty ? dotenv.env["BUCKET_URL"].toString() + widget.photos[0].name : "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460__340.png",
-        widget.photos.isNotEmpty ? widget.photos[0].name : ""
+        "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460__340.png",
+        ""
         );
+
 
     if (_validateSignUpFields(signInFieldsVm)) {
       final response = await widget.authService.register(signInFieldsVm, user);

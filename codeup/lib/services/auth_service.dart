@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 import 'dart:math';
 import 'package:http/http.dart' as http;
 import 'package:flutter_dotenv/flutter_dotenv.dart' as dotenv;
@@ -33,7 +34,7 @@ class AuthService {
 
     User loggedUser =
         users.firstWhere((user) => user.username == userFields.username);
-    currentUser = Person(loggedUser,"");// + photo!
+    currentUser = Person(loggedUser, ""); // + photo!
     return currentUser;
   }
 
@@ -105,7 +106,6 @@ class AuthService {
         'cookie': token,
       },
       body: jsonEncode(<String, String>{
-        'id': user.id.toString(),
         'username': user.username,
         'email': user.email,
         'firstname': user.firstname,
@@ -113,6 +113,31 @@ class AuthService {
       }),
     );
     return response;
+  }
+
+  Future<http.StreamedResponse> uploadPp(File file) async {
+    String token = "";
+    token = await SecureStorageService.getInstance()
+        .get("token")
+        .then((value) => token = value.toString());
+
+    var request = http.MultipartRequest(
+      'POST',
+      Uri.parse(
+        apiUrl + 'users/profile-picture',
+      ),
+    );
+    request.files.add(http.MultipartFile('image',
+        File(file.path).readAsBytes().asStream(), File(file.path).lengthSync(),
+        filename: file.path.split("/").last));
+    request.headers['cookie'] = token;
+    var res = await request.send().then((response) {
+      if(response.statusCode == 200) {
+       /*  AuthService.currentUser!.user.profilePictureUrl = dotenv.env["BUCKET_NAME"].toString();
+        AuthService.currentUser!.user.profilePictureName = file.path.split("/").last; */
+      }
+    });
+    return res;
   }
 
   static void setCurrentUser(Person? user) {

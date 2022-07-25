@@ -57,6 +57,7 @@ class FriendViewModel with ChangeNotifier {
         User user = User.fromJson(element);
         UserAndFriend userAndFriend = UserAndFriend(user, Friend(0,0,true ));
         UserListItem userListItem = UserListItem(userAndFriend);
+        if(userListItem.userAndFriend.user.id != AuthService.currentUser!.user.id)
         allUsers.add(userListItem);
       }
     });

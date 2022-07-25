@@ -1,9 +1,14 @@
+
+import 'package:codeup/ui/common/image_picker_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+
+import 'package:flutter_dotenv/flutter_dotenv.dart' as dotenv;
 
 import '../../entities/person.dart';
 import '../../entities/user.dart';
 import '../../services/auth_service.dart';
+import '../../services/secure_storage.dart';
 import '../../utils/sign_in_field_enum.dart';
 import '../authentication/viewModel/sign_in_fields_view_model.dart';
 import '../authentication/viewModel/soft_keyboard_view_model.dart';
@@ -25,6 +30,7 @@ class ProfileLoggedBody extends StatefulWidget {
 
 class _ProfileLoggedBodyState extends State<ProfileLoggedBody> {
   var currentUser = AuthService.currentUser;
+  ImagePickerWidget imagePickerWidget = ImagePickerWidget();
   AuthService authService = AuthService();
 
   final SoftKeyboardViewModel _softKeyboardVm = SoftKeyboardViewModel();
@@ -118,6 +124,7 @@ class _ProfileLoggedBodyState extends State<ProfileLoggedBody> {
         CustomAppBar("My Profile", false, null),
         SliverList(
           delegate: SliverChildListDelegate([
+                 
             Padding(
               padding: const EdgeInsets.all(15.0),
               child: Column(
@@ -125,10 +132,10 @@ class _ProfileLoggedBodyState extends State<ProfileLoggedBody> {
                 children: <Widget>[
                   Padding(
                     padding: const EdgeInsets.all(10.0),
-                    child: Image.network(
+                    child: /* Image.network(
                       currentUser!.user.profilePictureUrl,
-                      height: 120,
-                    ),
+                      height: 100,
+                    ), */ imagePickerWidget,
                   ),
                   const Text("Username"),
                   _buildUsername(
@@ -484,18 +491,19 @@ class _ProfileLoggedBodyState extends State<ProfileLoggedBody> {
   }
 
   _updateProfile() async {
-    User userUpdated = User(
+ User userUpdated = User(
         currentUser!.user.id,
         _signInFieldsVm.tLoginController.text,
         currentUser!.user.password,
         _signInFieldsVm.tUsernameController.text,
         _signInFieldsVm.tFirstnameController.text,
         _signInFieldsVm.tLastnameController.text,
-        currentUser!.user.profilePictureUrl,
-        currentUser!.user.profilePictureName
-        );
+        "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460__340.png",
+        ""
+        ); 
+        //Navigator.of(context).pushReplacementNamed("/home-screen");
 
-    print(userUpdated.id.toString() +
+    /* print(userUpdated.id.toString() +
         " " +
         userUpdated.email +
         " " +
@@ -505,22 +513,30 @@ class _ProfileLoggedBodyState extends State<ProfileLoggedBody> {
         " " +
         userUpdated.firstname +
         " " +
-        userUpdated.lastname);
+        userUpdated.lastname); */
 
-    final response =
+        if(imagePickerWidget.galleryItems.isNotEmpty){
+          authService.uploadPp(imagePickerWidget.photos[0]);
+
+    /* final response =
         await authService.updateAccount(_signInFieldsVm, userUpdated);
 
     if (response.statusCode == 200 || response.statusCode == 201) {
       {
-        AuthService.setCurrentUser(Person(userUpdated, currentUser!.user.profilePictureUrl));
+       /*  AuthService.setCurrentUser(Person(userUpdated, currentUser!.user.profilePictureUrl));
         Navigator.of(context).push(MaterialPageRoute(
-            builder: (_) => ProfileScreen(AuthService.currentUser!, false)));
+            builder: (_) => ProfileScreen(AuthService.currentUser!, false))); */
         const snackBar = SnackBar(
           content: Text('Changes have been saved'),
           backgroundColor: CustomColors.orange,
         );
         ScaffoldMessenger.of(context).showSnackBar(snackBar);
       }
-    }
-  }
+    } */
+  } 
 }
+
+_logOut(BuildContext context) async {
+  AuthService.setCurrentUser(null);
+  await SecureStorageService.getInstance().clear();
+}}

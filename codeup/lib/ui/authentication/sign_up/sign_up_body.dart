@@ -11,8 +11,7 @@ import '../../../utils/extensions.dart';
 import 'sign_up_bottom.dart';
 
 class SignUpBody extends StatefulWidget {
-  final ImagePickerWidget imagePickerWidget;
-  const SignUpBody(this.imagePickerWidget, {Key? key}) : super(key: key);
+  const SignUpBody({Key? key}) : super(key: key);
 
   @override
   State<SignUpBody> createState() => _SignUpBodyState();
@@ -78,7 +77,8 @@ class _SignUpBodyState extends State<SignUpBody> {
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: <Widget>[widget.imagePickerWidget,
+      children: <Widget>[
+        Container(height: 110, child: Image(image: NetworkImage("https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460__340.png"))),
         _buildUsername(context, inputTextStyle, border, enabledBorder,
             errorBorder, focusedBorder, focusedBorderError, textFieldHeight),
         _buildFirstname(context, inputTextStyle, border, enabledBorder,
@@ -89,7 +89,7 @@ class _SignUpBodyState extends State<SignUpBody> {
             focusedBorder, focusedBorderError, textFieldHeight),
         _buildPassword(context, inputTextStyle, border, enabledBorder,
             errorBorder, focusedBorder, focusedBorderError, textFieldHeight),
-            SignUpBottom(ancestorContext: context, authService: AuthService(signInFieldsVm: SignInFieldsViewModel()), photos : widget.imagePickerWidget.galleryItems)
+            SignUpBottom(ancestorContext: context, authService: AuthService(signInFieldsVm: SignInFieldsViewModel()))
                 
       ],
     );
