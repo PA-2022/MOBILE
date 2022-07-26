@@ -79,6 +79,7 @@ class PostViewModel with ChangeNotifier {
   }
 
    Future<List<ContentPost>> fetchContentByPostId(int postId) async {
+    
     List<ContentPost> contentPosts = [];
     await postService.fetchContentById(postId).then((data) async {
         for (dynamic element in jsonDecode(data.body)) {

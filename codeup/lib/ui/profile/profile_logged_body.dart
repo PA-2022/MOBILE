@@ -491,16 +491,7 @@ class _ProfileLoggedBodyState extends State<ProfileLoggedBody> {
   }
 
   _updateProfile() async {
- User userUpdated = User(
-        currentUser!.user.id,
-        _signInFieldsVm.tLoginController.text,
-        currentUser!.user.password,
-        _signInFieldsVm.tUsernameController.text,
-        _signInFieldsVm.tFirstnameController.text,
-        _signInFieldsVm.tLastnameController.text,
-        "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460__340.png",
-        ""
-        ); 
+ 
         //Navigator.of(context).pushReplacementNamed("/home-screen");
 
     /* print(userUpdated.id.toString() +
@@ -517,8 +508,17 @@ class _ProfileLoggedBodyState extends State<ProfileLoggedBody> {
 
         if(imagePickerWidget.galleryItems.isNotEmpty){
           authService.uploadPp(imagePickerWidget.photos[0]);
-
-    /* final response =
+User userUpdated = User(
+        currentUser!.user.id,
+        _signInFieldsVm.tLoginController.text,
+        currentUser!.user.password,
+        _signInFieldsVm.tUsernameController.text,
+        _signInFieldsVm.tFirstnameController.text,
+        _signInFieldsVm.tLastnameController.text,
+        dotenv.env["DEFAULT_PP"].toString(),
+        ""
+        ); 
+    final response =
         await authService.updateAccount(_signInFieldsVm, userUpdated);
 
     if (response.statusCode == 200 || response.statusCode == 201) {
@@ -532,7 +532,7 @@ class _ProfileLoggedBodyState extends State<ProfileLoggedBody> {
         );
         ScaffoldMessenger.of(context).showSnackBar(snackBar);
       }
-    } */
+    }
   } 
 }
 

@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:flutter_dotenv/flutter_dotenv.dart' as dotenv;
 
 import 'package:codeup/services/auth_service.dart';
 import 'package:codeup/ui/common/custom_colors.dart';
@@ -96,7 +97,7 @@ class _ImagePickerWidgetState extends State<ImagePickerWidget> {
               child:imageChoosen ? Icon(
                  Icons.edit,
                 color: kLightGray,
-              ) : snapshot.data != null ? Image(image: NetworkImage(snapshot.data!.profilePictureUrl)) : Image(image: NetworkImage("https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460__340.png")) ,
+              ) : snapshot.data != null ? Image(image: NetworkImage(snapshot.data!.profilePictureUrl)) : Image(image: NetworkImage(dotenv.env["DEFAULT_PP"].toString())) ,
             ),
           ),
         );

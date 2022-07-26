@@ -18,11 +18,11 @@ class FriendViewModel with ChangeNotifier {
   //final _random = new Random();
 
    Future<List<UserAndFriend>> fetchUsersAndFriends() async {
-    List<UserAndFriend> allRelations = [];
+    List<UserAndFriend> allRelations = [];   
     await friendService
         .fetchFriendsById(AuthService.currentUser!.user.id)
-        .then((data) {
-      for (dynamic element in jsonDecode(data.body)) {
+        .then((data) {  
+      for (dynamic element in jsonDecode(data.body)) { 
         UserAndFriend userAndFriend = UserAndFriend.fromJson(element);
         User user = userAndFriend.user;
         Friend friend = userAndFriend.friend;
@@ -35,6 +35,7 @@ class FriendViewModel with ChangeNotifier {
   Future<List<FriendsListItem>> fetchFriendsOfUser() async {
     List<FriendsListItem> allFriends = [];
     await fetchUsersAndFriends().then((relations) {
+
       for(UserAndFriend userAndFriend in relations) {
         FriendsListItem friendsListItem = FriendsListItem(userAndFriend);
         allFriends.add(friendsListItem);

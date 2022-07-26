@@ -1,3 +1,5 @@
+import 'package:flutter_dotenv/flutter_dotenv.dart' as dotenv;
+
 class User {
   final int id;
   final String email;
@@ -18,8 +20,8 @@ factory User.fromJson(Map<String, dynamic> json) {
       json['username'],
       json['firstname'],
       json['lastname'],
-      json['profilePictureUrl'],
-      json['profilePictureName'],
+      json['profilePictureUrl'] != null ? json['profilePictureUrl'] : dotenv.env["DEFAULT_PP"],
+      json['profilePictureName'] != null ? json['profilePictureName'] : "",
     );
   }
  @override

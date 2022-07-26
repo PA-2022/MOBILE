@@ -76,7 +76,7 @@ class ForumViewModel with ChangeNotifier {
         if (post.forumId == id) allPosts.add(postBoxWidget);
       }
     });
-    return allPosts;
+    return allPosts.reversed.toList();
   }
 
   Future<ForumListItem> fetchForumById(int id) async {

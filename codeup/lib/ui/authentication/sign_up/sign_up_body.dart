@@ -1,4 +1,5 @@
 import 'package:codeup/ui/common/image_picker_widget.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart' as dotenv;
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -78,7 +79,7 @@ class _SignUpBodyState extends State<SignUpBody> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: <Widget>[
-        Container(height: 110, child: Image(image: NetworkImage("https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460__340.png"))),
+        Container(height: 110, child: Image(image: NetworkImage(dotenv.env["DEFAULT_PP"].toString()))),
         _buildUsername(context, inputTextStyle, border, enabledBorder,
             errorBorder, focusedBorder, focusedBorderError, textFieldHeight),
         _buildFirstname(context, inputTextStyle, border, enabledBorder,

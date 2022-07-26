@@ -1,5 +1,6 @@
 import 'package:codeup/services/post_service.dart';
 import 'package:codeup/ui/home/home_screen.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart' as dotenv;
 import 'package:codeup/ui/home/viewModel/home_view_model.dart';
 import 'package:flutter/material.dart';
 
@@ -54,7 +55,7 @@ class _PostBoxState extends State<PostBox> {
   Widget build(BuildContext context) {
     CommentViewModel commentViewModel = CommentViewModel();
     commentViewModel.getCommentCount(widget.postContent.post);
-    var response = postViewModel.userHasVoted(widget.postContent.post);
+    //var response = postViewModel.userHasVoted(widget.postContent.post);
     
     return Padding(
       padding: const EdgeInsets.only(bottom: 10, left: 10, right: 10),
@@ -87,7 +88,7 @@ class _PostBoxState extends State<PostBox> {
                             height: 47,
                             child: SizedBox(
                         height: 100,
-                        child: Image(image: NetworkImage(widget.commiter.user.profilePictureUrl!= null ? widget.commiter.user.profilePictureUrl : "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460__340.png")),
+                        child: Image(image: NetworkImage(widget.commiter.user.profilePictureUrl!= null ? widget.commiter.user.profilePictureUrl : dotenv.env["DEFAULT_PP"].toString())),
                       ),/* CircleAvatar(
                                 backgroundImage:
                                     NetworkImage(widget.commiter.user.profilePictureUrl!= null ? widget.commiter.user.profilePictureUrl : "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460__340.png"),

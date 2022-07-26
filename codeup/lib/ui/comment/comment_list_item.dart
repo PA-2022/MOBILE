@@ -174,7 +174,6 @@ class _CommentListItemState extends State<CommentListItem> {
   _editComment(BuildContext context) async {
     Comment comment = Comment(widget.comment.id, responseContent, null,
             AuthService.currentUser!.user.id, "?", widget.comment.postId, widget.comment.creationDate, widget.comment.note);
-            print(comment.postId);
      Response response = await commentService.updateComment(
         comment, 
         AuthService.currentUser!);

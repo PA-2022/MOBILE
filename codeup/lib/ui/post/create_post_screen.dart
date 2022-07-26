@@ -71,7 +71,7 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
                     Align(
                       alignment: Alignment.center,
                       child: SizedBox(
-                        height: 80,
+                        height: 130,
                         child: Image(image: NetworkImage(AuthService.currentUser!.user.profilePictureUrl)),
                       ),
                     ),

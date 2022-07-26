@@ -37,7 +37,7 @@ class _ForumListState extends State<ForumList> {
           builder: (BuildContext context,
               AsyncSnapshot<List<ForumListItem>> snapshot) {
             return snapshot.data != null
-                ? (snapshot.data!.isNotEmpty ? Consumer<CustomAppBar>(builder: (context, appBar, child) {
+                ?  Consumer<CustomAppBar>(builder: (context, appBar, child) {
                     return ListView(
                       children: [
                         if (AuthService.currentUser != null)
@@ -65,17 +65,14 @@ class _ForumListState extends State<ForumList> {
                           ),
                         for (ForumListItem forum
                             in snapshot.data as List<ForumListItem>)
-                          (forum.forum.title.toLowerCase().contains(
+                          snapshot.data!.isNotEmpty ? ((forum.forum.title.toLowerCase().contains(
                                       appBar.valueSearch.toLowerCase()) ||
                                   forum.forum.description
                                       .toLowerCase()
                                       .contains(
                                           appBar.valueSearch.toLowerCase()))
                               ? forum
-                              : Container()
-                      ],
-                    );
-                  }) : const Center(
+                              : Container()) : const Center(
                     child: Text(
                         "No forums to show",
                         style: TextStyle(
@@ -83,7 +80,10 @@ class _ForumListState extends State<ForumList> {
                             fontSize: 18,
                             fontWeight: FontWeight.bold),
                       ),
-                  ))
+                  )
+                      ],
+                    );
+                  })
                 : Container(
                     alignment: Alignment.center,
                     child: const CircularProgressIndicator(

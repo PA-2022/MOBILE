@@ -1,4 +1,5 @@
 import 'package:codeup/ui/common/test_data.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart' as dotenv;
 import 'package:flutter/material.dart';
 
 import '../../entities/person.dart';
@@ -50,7 +51,7 @@ Widget _loggedMenuOptions(BuildContext context, Person currentUser) {
                     Align(
                       alignment: Alignment.center,
                       child: Image.network(
-                        snapshot.data != null ? snapshot.data!.profilePictureUrl : "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460__340.png" ,
+                        snapshot.data != null ? snapshot.data!.profilePictureUrl : dotenv.env["DEFAULT_PP"].toString() ,
                         height: 140,
                       ),
                     ),

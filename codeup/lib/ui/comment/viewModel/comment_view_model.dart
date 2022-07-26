@@ -99,7 +99,7 @@ class CommentViewModel with ChangeNotifier {
         commentVote = CommentVote.fromJson(jsonDecode(data.body));
       }
     });
-    //print(commentVote);
+
     return commentVote;
    
   }
