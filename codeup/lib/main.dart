@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart' as dotenv;
 
@@ -14,13 +16,21 @@ import 'ui/post/create_post_screen.dart';
 import 'ui/profile/profile_screen.dart';
 import 'ui/saved_posts/saved_posts_screen.dart';
 
-//TODO:
+ class MyHttpOverrides extends HttpOverrides{
+  @override
+  HttpClient createHttpClient(SecurityContext? context){
+    return super.createHttpClient(context)
+      ..badCertificateCallback = (X509Certificate cert, String host, int port)=> true;
+  }
+}
 
 void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  HttpOverrides.global = MyHttpOverrides();
   await dotenv.load();
   runApp(MyApp("sign-in"));
 }
-//TODO : edit post, s3 ask public ?, dmd quoi sur page daccueil, delete friend
+
 class MyApp extends StatelessWidget {
   final String launchRoute;
   Person? currentUser = AuthService.currentUser;

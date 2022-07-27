@@ -23,6 +23,9 @@ class HomeViewModel with ChangeNotifier {
 
   Future<List<PostBox>> fetchPosts() async {
     List<PostBox> allPosts = [];
+    
+    
+            
     await forumViewModel.fetchForums().then((data) async {
       for (ForumListItem forumListItem in data) {
         await postService
@@ -70,9 +73,7 @@ class HomeViewModel with ChangeNotifier {
   
 
   Future<List<PostBox>> fetchHomePosts() async {
-    
     List<PostBox> allPosts = [];
-    
     await forumViewModel.fetchForumsOfUser().then((data) async {
       for (ForumListItem forumListItem in data) {
         await postService

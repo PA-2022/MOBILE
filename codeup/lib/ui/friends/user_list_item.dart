@@ -98,8 +98,9 @@ class _UserListItemState extends State<UserListItem> {
   }
 
   _getAction(bool isAFriend, List<FriendsListItem> friendsOfUser) {
-    if (isAFriend) {
+    if (friendsOfUser.map((e) => e.userAndFriend.user.id).contains(widget.userAndFriend.user.id)) {
       if (widget.userAndFriend.user.id == AuthService.currentUser!.user.id) {
+        print("1");
         return const Padding(
           padding: EdgeInsets.only(right:20.0),
           child: Text(
@@ -109,6 +110,7 @@ class _UserListItemState extends State<UserListItem> {
         );
       } else {
         
+        print("2");
           for (var friend in friendsOfUser) {
             if (friend.userAndFriend.friend.user_id == widget.userAndFriend.user.id) {// si il a envoyé la demande 
             
@@ -122,6 +124,7 @@ class _UserListItemState extends State<UserListItem> {
                }
             } else if(friend.userAndFriend.friend.friend_id == widget.userAndFriend.user.id) { //si c'est moi
               if (!friend.userAndFriend.friend.is_accepted) {
+
                 return const Padding(
                       padding: EdgeInsets.all(18.0),
                       child: Text(
@@ -129,6 +132,8 @@ class _UserListItemState extends State<UserListItem> {
                         style: TextStyle(),
                       ),
                     );
+              } else {
+                return Container();
               }
             }
           }

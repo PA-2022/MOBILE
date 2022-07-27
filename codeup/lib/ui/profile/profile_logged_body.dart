@@ -491,23 +491,10 @@ class _ProfileLoggedBodyState extends State<ProfileLoggedBody> {
   }
 
   _updateProfile() async {
- 
-        //Navigator.of(context).pushReplacementNamed("/home-screen");
-
-    /* print(userUpdated.id.toString() +
-        " " +
-        userUpdated.email +
-        " " +
-        userUpdated.password +
-        " " +
-        userUpdated.username +
-        " " +
-        userUpdated.firstname +
-        " " +
-        userUpdated.lastname); */
-
-        if(imagePickerWidget.galleryItems.isNotEmpty){
+      if(imagePickerWidget.galleryItems.isNotEmpty){
           authService.uploadPp(imagePickerWidget.photos[0]);
+}
+
 User userUpdated = User(
         currentUser!.user.id,
         _signInFieldsVm.tLoginController.text,
@@ -518,14 +505,12 @@ User userUpdated = User(
         dotenv.env["DEFAULT_PP"].toString(),
         ""
         ); 
+        
     final response =
         await authService.updateAccount(_signInFieldsVm, userUpdated);
 
     if (response.statusCode == 200 || response.statusCode == 201) {
       {
-       /*  AuthService.setCurrentUser(Person(userUpdated, currentUser!.user.profilePictureUrl));
-        Navigator.of(context).push(MaterialPageRoute(
-            builder: (_) => ProfileScreen(AuthService.currentUser!, false))); */
         const snackBar = SnackBar(
           content: Text('Changes have been saved'),
           backgroundColor: CustomColors.orange,
@@ -533,7 +518,7 @@ User userUpdated = User(
         ScaffoldMessenger.of(context).showSnackBar(snackBar);
       }
     }
-  } 
+  
 }
 
 _logOut(BuildContext context) async {

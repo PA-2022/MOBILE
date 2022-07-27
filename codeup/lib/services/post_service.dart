@@ -8,7 +8,7 @@ import '../entities/post.dart';
 import 'secure_storage.dart';
 
 class PostService {
-  static String apiUrl = "http://" +
+  static String apiUrl = "https://" +
       (dotenv.env.keys.contains("HOST") ? dotenv.env["HOST"]! : "localhost") +
       ":" +
       (dotenv.env.keys.contains("SERVER_PORT")

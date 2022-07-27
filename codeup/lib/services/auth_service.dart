@@ -1,8 +1,8 @@
 import 'dart:convert';
 import 'dart:io';
-import 'dart:math';
 import 'package:http/http.dart' as http;
 import 'package:flutter_dotenv/flutter_dotenv.dart' as dotenv;
+import 'package:http/io_client.dart';
 
 import '../entities/person.dart';
 import '../ui/authentication/viewModel/sign_in_fields_view_model.dart';
@@ -10,7 +10,7 @@ import '../entities/user.dart';
 import 'secure_storage.dart';
 
 class AuthService {
-  static String apiUrl = "http://" +
+  static String apiUrl = "https://" +
       (dotenv.env.keys.contains("HOST") ? dotenv.env["HOST"]! : "localhost") +
       ":" +
       (dotenv.env.keys.contains("SERVER_PORT")
@@ -95,23 +95,28 @@ class AuthService {
 
   Future<http.Response> updateAccount(
       SignInFieldsViewModel signInFieldsVm, User user) async {
+        
+
     String token = "";
     token = await SecureStorageService.getInstance()
         .get("token")
         .then((value) => token = value.toString());
-    final response = http.put(
+    final response = await http.put(
       Uri.parse(apiUrl + "users/" + user.id.toString()),
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
         'cookie': token,
       },
       body: jsonEncode(<String, String>{
+        'id': user.id.toString(),
         'username': user.username,
+        'password': user.password,
         'email': user.email,
         'firstname': user.firstname,
         'lastname': user.lastname
       }),
     );
+   
     return response;
   }
 
@@ -127,6 +132,8 @@ class AuthService {
         apiUrl + 'users/profile-picture',
       ),
     );
+
+            
     request.files.add(http.MultipartFile('image',
         File(file.path).readAsBytes().asStream(), File(file.path).lengthSync(),
         filename: file.path.split("/").last));

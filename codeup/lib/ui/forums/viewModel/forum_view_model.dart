@@ -26,6 +26,7 @@ class ForumViewModel with ChangeNotifier {
   //final _random = new Random();
 
   Future<List<ForumListItem>> fetchForums() async {
+    
     List<ForumListItem> allForums = [];
     await forumService.fetchForums().then((data) async {
       for (dynamic element in jsonDecode(data.body)) {

@@ -9,7 +9,7 @@ import '../entities/user_and_friend.dart';
 import 'secure_storage.dart';
 
 class FriendService {
-  static String apiUrl = "http://" +
+  static String apiUrl = "https://" +
       (dotenv.env.keys.contains("HOST") ? dotenv.env["HOST"]! : "localhost") +
       ":" +
       (dotenv.env.keys.contains("SERVER_PORT")

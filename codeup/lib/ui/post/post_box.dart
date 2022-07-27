@@ -177,10 +177,10 @@ class _PostBoxState extends State<PostBox> {
                         onTap: () => _openComments(context),
                       ),
                     
-                    GestureDetector(
+                    /* GestureDetector(
                         child: PostBoxAction(
                             Icons.share_outlined, "Share", () => _share()),
-                        onTap: () => _share()),
+                        onTap: () => _share()), */
                   ],
                 ),
               ),
