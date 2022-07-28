@@ -50,10 +50,13 @@ Widget _loggedMenuOptions(BuildContext context, Person currentUser) {
                   child: Stack(children: [
                     Align(
                       alignment: Alignment.center,
-                      child: Image.network(
-                        snapshot.data != null ? snapshot.data!.profilePictureUrl : dotenv.env["DEFAULT_PP"].toString() ,
-                        height: 140,
-                      ),
+                      child: SizedBox(
+                                  height: 200,
+                                  child: CircleAvatar(
+                                    radius:60,
+                                    backgroundImage: NetworkImage(snapshot.data != null ? snapshot.data!.profilePictureUrl : dotenv.env["DEFAULT_PP"].toString() 
+                                        ),
+                                  )),
                     ),
                     Padding(
                       padding: const EdgeInsets.only(right: 65.0),
@@ -104,6 +107,7 @@ Widget _loggedMenuOptions(BuildContext context, Person currentUser) {
 Widget _unloggedMenuOptions(
   BuildContext context,
 ) {
+
   return ListView(
     padding: EdgeInsets.zero,
     children: [

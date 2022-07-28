@@ -135,7 +135,7 @@ class _ProfileLoggedBodyState extends State<ProfileLoggedBody> {
                     child: /* Image.network(
                       currentUser!.user.profilePictureUrl,
                       height: 100,
-                    ), */ imagePickerWidget,
+                    ), */ Container(child: imagePickerWidget),
                   ),
                   const Text("Username"),
                   _buildUsername(

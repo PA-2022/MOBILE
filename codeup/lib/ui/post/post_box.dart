@@ -75,64 +75,66 @@ class _PostBoxState extends State<PostBox> {
           ),
           child: Column(
             children: [
-              Row(
-                children: [
-                  GestureDetector(
-                    onTap: () => _getCommiterProfile(context, widget.commiter),
-                    child: Row(
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.only(
-                              left: 10, top: 10, bottom: 10, right: 10),
-                          child: SizedBox(
-                            height: 47,
-                            child: SizedBox(
-                        height: 100,
-                        child: Image(image: NetworkImage(widget.commiter.user.profilePictureUrl!= null ? widget.commiter.user.profilePictureUrl : dotenv.env["DEFAULT_PP"].toString())),
-                      ),/* CircleAvatar(
-                                backgroundImage:
-                                    NetworkImage(widget.commiter.user.profilePictureUrl!= null ? widget.commiter.user.profilePictureUrl : "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460__340.png"),
-                                radius: 30), */
+              Padding(
+                padding: const EdgeInsets.only(left:8.0),
+                child: Row(
+                  children: [
+                    GestureDetector(
+                      onTap: () => _getCommiterProfile(context, widget.commiter),
+                      child: Row(
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.only(
+                                left: 10, top: 10, bottom: 10, right: 10),
+                            child:  SizedBox(
+                                  height: 55,
+                                  child: CircleAvatar(
+                                    radius: 30,
+                                    backgroundImage: NetworkImage(widget.commiter.user.profilePictureUrl!= null ? widget.commiter.user.profilePictureUrl : dotenv.env["DEFAULT_PP"].toString()
+                                        ),
+                                  )),
+                            
                           ),
-                        ),
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              widget.commiter.user.firstname +
-                                  " " +
-                                  widget.commiter.user.lastname,
-                              style: const TextStyle(
-                                fontSize: 17,
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                widget.commiter.user.username,
+                                style: const TextStyle(
+                                  fontSize: 17,
+                                ),
                               ),
-                            ),
-                            Text(
-                              DateHelper.formatDate(
-                                  widget.postContent.post.creationDate.toString()),
-                              style: const TextStyle(
-                                  fontSize: 15, color: Colors.grey),
-                            ),
-                          ],
-                        ),
-                      ],
+                              Text(
+                                DateHelper.formatDate(
+                                    widget.postContent.post.creationDate.toString()),
+                                style: const TextStyle(
+                                    fontSize: 15, color: Colors.grey),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
                     ),
-                  ),
-                  if (AuthService.currentUser != null &&
-                      AuthService.currentUser!.user.id == widget.postContent.post.userId)
-                    Padding(
-                      padding: const EdgeInsets.only(right: 10),
-                      child: IconButton(
-                          onPressed: () => _editPost(),
-                          icon: const Icon(Icons.edit_outlined)),
-                    )
-                ],
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    if (AuthService.currentUser != null &&
+                        AuthService.currentUser!.user.id == widget.postContent.post.userId)
+                      Padding(
+                        padding: const EdgeInsets.only(right: 10),
+                        child: IconButton(
+                            onPressed: () => _editPost(),
+                            icon: const Icon(Icons.edit_outlined)),
+                      )
+                  ],
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                ),
               ),
-              Text(
-                widget.postContent.post.title,
-                style: const TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 18,
+              Padding(
+                padding: const EdgeInsets.only(left: 15.0),
+                child: Text(
+                  widget.postContent.post.title,
+                  style: const TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 18,
+                  ),
                 ),
               ),
               Padding(

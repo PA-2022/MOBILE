@@ -60,7 +60,7 @@ class ForumViewModel with ChangeNotifier {
 
         Post post = Post.fromJson(element);
         ContentPost contentPost =
-                ContentPost(-1, post.content, post.id, 0, 1);
+                ContentPost(-1, post.content, post.id, -1, 0, 1, "");
 
             List<ContentPost> contentPosts = [];
             contentPosts.add(contentPost);

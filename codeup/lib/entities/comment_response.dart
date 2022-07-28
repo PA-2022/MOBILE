@@ -6,10 +6,12 @@ class CommentResponse {
   CommentResponse(this.commentGlobal,  this.responses);
  
 factory CommentResponse.fromJson(Map<String, dynamic> json) {
+  
   var res = CommentResponse(
       CommentGlobal.fromJson(json['comment']),
       json['responses']
     );
+    
     return res;
   }
 

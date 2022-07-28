@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 
 import '../../entities/forum.dart';
 import '../../services/auth_service.dart';
@@ -41,11 +42,18 @@ class _ForumListItemState extends State<ForumListItem> {
                 padding: const EdgeInsets.only(bottom: 8.0),
                 child: Row(
                   children: [
-                    Padding(
+                    Row(
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Container(child: Text(" "), color: colorFromHex((widget.forum.color)),width: 20,),
+                        ),
+                         Padding(
                       padding: const EdgeInsets.only(left: 25.0),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
+
                           Text(
                             widget.forum.title,
                             style: const TextStyle(fontSize: 18),
@@ -53,6 +61,9 @@ class _ForumListItemState extends State<ForumListItem> {
                         ],
                       ),
                     ),
+                      ],
+                    ),
+                   
                     snapshot.data != null
                         ? (!snapshot.data!
                             ? CustomButton(CustomColors.mainYellow, "Join",

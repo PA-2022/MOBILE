@@ -46,7 +46,7 @@ class _FriendsScreenState extends State<FriendsScreen> {
                             padding: const EdgeInsets.only(left: 15.0),
                             child: Row(
                               children: [
-                                const Text("My friends only",
+                                const Text("My friends and invitations only",
                                     style: TextStyle(
                                         fontWeight: FontWeight.normal,
                                         fontSize: 16)),

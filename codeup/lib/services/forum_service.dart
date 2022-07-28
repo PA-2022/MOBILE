@@ -30,10 +30,15 @@ class ForumService {
   
 
   Future<http.Response> addForum(Forum forum) async {
+    String token = "";
+    token = await SecureStorageService.getInstance()
+        .get("token")
+        .then((value) => token = value.toString());
     return await http.post(
       Uri.parse(apiUrl + 'forums/add'),
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
+        'cookie': token,
       },
       body: jsonEncode({
         'title': forum.title,

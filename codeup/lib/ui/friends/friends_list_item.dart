@@ -66,15 +66,15 @@ FriendViewModel friendViewModel = FriendViewModel();
                                 padding: const EdgeInsets.all(10.0),
                                 child: Container(
                                   decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.all(Radius.circular(40)),),
-                                  child: SizedBox(
-                                    
-                                    height: 30,
-                                    child: Image(
-                                      image: NetworkImage(widget.userAndFriend.user.profilePictureUrl),
-                                    ),
+                                  child:  SizedBox(
+                                  height: 45,
+                                  child: CircleAvatar(
+                                    backgroundImage: NetworkImage(
+                                        widget.userAndFriend.user.profilePictureUrl),
+                                  )),
                                   ),
                                 ),
-                              ), Text(widget.userAndFriend.user.username),
+                               Text(widget.userAndFriend.user.username),
                             ],
                           ),
                           friendsOfUser.data != null ? 

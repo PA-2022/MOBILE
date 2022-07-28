@@ -71,9 +71,12 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
                     Align(
                       alignment: Alignment.center,
                       child: SizedBox(
-                        height: 130,
-                        child: Image(image: NetworkImage(AuthService.currentUser!.user.profilePictureUrl)),
-                      ),
+                                  height: 110,
+                                  child: CircleAvatar(
+                                    radius:50,
+                                    backgroundImage: NetworkImage(AuthService.currentUser!.user.profilePictureUrl
+                                        ),
+                                  )),
                     ),
                     if (widget.choosenForumId == null)
                 Align(
@@ -218,7 +221,7 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
     Post post = Post(-1, titleController.text, contentController.text, "C", forumId,
             AuthService.currentUser!.user.id, null, 0);
 
-    ContentPost contentPost = ContentPost(-1, post.content, post.id, 0, 1);
+    ContentPost contentPost = ContentPost(-1, post.content, post.id, -1, 0, 1, "");
     List<ContentPost> contentPosts = [];
     contentPosts.add(contentPost);
     PostContent postContent = PostContent(post, contentPosts);

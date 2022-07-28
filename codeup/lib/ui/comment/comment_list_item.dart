@@ -1,3 +1,4 @@
+import 'package:codeup/entities/comment_response.dart';
 import 'package:codeup/services/comment_service.dart';
 import 'package:codeup/ui/common/custom_button.dart';
 import 'package:flutter/material.dart';
@@ -13,21 +14,18 @@ import '../profile/profile_screen.dart';
 import 'comment_votes_counter.dart';
 
 class CommentListItem extends StatefulWidget {
-
-final Comment comment;
+  final CommentResponse commentResponse;
   Person commiter;
   final int _votes = 0;
 
-  CommentListItem(this.comment, this.commiter, {Key? key}) : super(key: key);
-
+  CommentListItem(this.commentResponse, this.commiter, {Key? key})
+      : super(key: key);
 
   @override
   State<CommentListItem> createState() => _CommentListItemState();
 }
 
 class _CommentListItemState extends State<CommentListItem> {
-
-  
   bool editMode = false;
   String responseContent = "";
   TextEditingController contentController = TextEditingController();
@@ -35,10 +33,11 @@ class _CommentListItemState extends State<CommentListItem> {
 
   @override
   void initState() {
-    contentController.text = widget.comment.content;
+    contentController.text =
+        widget.commentResponse.commentGlobal.contents[0].content;
     super.initState();
   }
-  
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -56,13 +55,14 @@ class _CommentListItemState extends State<CommentListItem> {
       child: Padding(
         padding: const EdgeInsets.only(left: 8, top: 8, right: 8, bottom: 8),
         child: Row(
-         
           children: [
-            CommentVotesCounter(widget.comment.note, widget.comment),
+            CommentVotesCounter(
+                widget.commentResponse.commentGlobal.comment.note,
+                widget.commentResponse.commentGlobal.comment),
             Expanded(
                 child: Column(
               children: [
-              /*if (AuthService.currentUser != null &&
+                /*if (AuthService.currentUser != null &&
                       AuthService.currentUser!.user.id == widget.comment.userId)
                     Align(
                       alignment: Alignment.centerRight,
@@ -76,90 +76,89 @@ class _CommentListItemState extends State<CommentListItem> {
                       ),
                     ), */
                 Padding(
-                  padding: const EdgeInsets.only(top:10.0, left: 10.0),
+                  padding: const EdgeInsets.only(top: 10.0, left: 10.0),
                   child: Align(
-                    child: editMode ? TextFormField(
-                        controller: contentController,
-                        decoration: const InputDecoration(
-                          border: OutlineInputBorder(
-                            borderSide: BorderSide(
-                                color: CustomColors.darkText, width: 1.0),
+                    child: editMode
+                        ? TextFormField(
+                            controller: contentController,
+                            decoration: const InputDecoration(
+                              border: OutlineInputBorder(
+                                borderSide: BorderSide(
+                                    color: CustomColors.darkText, width: 1.0),
+                              ),
+                              floatingLabelBehavior:
+                                  FloatingLabelBehavior.always,
+                              labelStyle: TextStyle(fontSize: 18),
+                              floatingLabelStyle: TextStyle(
+                                  fontSize: 19,
+                                  color: CustomColors.darkText,
+                                  fontWeight: FontWeight.bold),
+                              fillColor: Colors.white,
+                              filled: true,
+                              focusedBorder: OutlineInputBorder(
+                                borderSide: BorderSide(
+                                    color: CustomColors.darkText, width: 2.0),
+                              ),
+                            ),
+                            onChanged: (str) {
+                              setState(() {
+                                responseContent = str;
+                              });
+                            },
+                          )
+                        : Text(
+                            widget.commentResponse.commentGlobal.contents[0]
+                                .content,
+                            style: const TextStyle(fontSize: 17),
                           ),
-                          floatingLabelBehavior: FloatingLabelBehavior.always,
-                          labelStyle: TextStyle(fontSize: 18),
-                          floatingLabelStyle: TextStyle(
-                              fontSize: 19,
-                              color: CustomColors.darkText,
-                              fontWeight: FontWeight.bold),
-                          fillColor: Colors.white,
-                          filled: true,
-                          focusedBorder: OutlineInputBorder(
-                            borderSide: BorderSide(
-                                color: CustomColors.darkText, width: 2.0),
-                          ),
-                        ),
-                        onChanged: (str) {
-                          setState(() {
-                            responseContent = str;
-                          });
-                        },
-                      ) : Text(
-                      widget.comment.content,
-                      style: const TextStyle(fontSize: 17),
-                    ),
                     alignment: Alignment.centerLeft,
                   ),
                 ),
-  
-                
-                    GestureDetector(
-                      onTap: () => _getCommiterProfile(context, widget.commiter),
-                      child: Align(
-                        child: Padding(
-                          padding: const EdgeInsets.only(right: 8.0),
-                          child: Column(
+                GestureDetector(
+                  onTap: () => _getCommiterProfile(context, widget.commiter),
+                  child: Align(
+                    child: Padding(
+                      padding: const EdgeInsets.only(right: 8.0),
+                      child: Column(
+                        children: [
+                          Row(
                             children: [
-                              
-                              Row(
-                                children: [
-                                  
-                                  SizedBox(
-                                    height: 25,
-                                    child: Image(
-                                        image: NetworkImage(widget.commiter.user.profilePictureUrl)),
-                                  ),
-                                  
-                                  Padding(
-                                    padding: const EdgeInsets.only(left: 6.0),
-                                    child: Text(
-                                        widget.commiter.user.firstname +
-                                            " " +
-                                            widget.commiter.user.lastname,
-                                        style: const TextStyle(
-                                            color: CustomColors.mainPurple)),
-                                  ),
-                                ],
-                                mainAxisAlignment: MainAxisAlignment.end,
+                              SizedBox(
+                                  height: 45,
+                                  child: CircleAvatar(
+                                    backgroundImage: NetworkImage(
+                                        widget.commiter.user.profilePictureUrl),
+                                  )),
+                              Padding(
+                                padding: const EdgeInsets.only(left: 6.0),
+                                child: Text(widget.commiter.user.username,
+                                    style: const TextStyle(
+                                        color: CustomColors.mainPurple)),
                               ),
-                               if (widget.comment.creationDate != null)
-                               Align(
-                                alignment: Alignment.bottomRight,
-                                 child: Text(
-                                      DateHelper.formatDate(widget.comment.creationDate.toString()),
-                                      style: const TextStyle(
-                                          fontSize: 15, color: Colors.grey),
-                                    ),
-                               ),
-                               
                             ],
+                            mainAxisAlignment: MainAxisAlignment.end,
                           ),
-                        ),
-                        alignment: Alignment.bottomRight,
+                          if (widget.commentResponse.commentGlobal.comment
+                                  .creationDate !=
+                              null)
+                            Align(
+                              alignment: Alignment.bottomRight,
+                              child: Text(
+                                DateHelper.formatDate(widget.commentResponse
+                                    .commentGlobal.comment.creationDate
+                                    .toString()),
+                                style: const TextStyle(
+                                    fontSize: 15, color: Colors.grey),
+                              ),
+                            ),
+                        ],
                       ),
                     ),
-                ],
+                    alignment: Alignment.bottomRight,
+                  ),
+                ),
+              ],
             )),
-            
           ],
         ),
       ),
@@ -172,16 +171,22 @@ class _CommentListItemState extends State<CommentListItem> {
   }
 
   _editComment(BuildContext context) async {
-    Comment comment = Comment(widget.comment.id, responseContent, null,
-            AuthService.currentUser!.user.id, "?", widget.comment.postId, widget.comment.creationDate, widget.comment.note);
-     Response response = await commentService.updateComment(
-        comment, 
-        AuthService.currentUser!);
+    Comment comment = Comment(
+        widget.commentResponse.commentGlobal.comment.id,
+        responseContent,
+        null,
+        AuthService.currentUser!.user.id,
+        "?",
+        widget.commentResponse.commentGlobal.comment.postId,
+        widget.commentResponse.commentGlobal.comment.creationDate,
+        widget.commentResponse.commentGlobal.comment.note);
+    Response response =
+        await commentService.updateComment(comment, AuthService.currentUser!);
     if (response.statusCode == 200 || response.statusCode == 201) {
       setState(() {
-      editMode = false;
-    });
-     /*  {
+        editMode = false;
+      });
+      /*  {
         await Navigator.of(context)
             .pushReplacement(MaterialPageRoute(builder: (_) {
           return const HomeScreen();
@@ -191,6 +196,5 @@ class _CommentListItemState extends State<CommentListItem> {
         }));
       } */
     }
-    
   }
 }

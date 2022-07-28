@@ -29,6 +29,7 @@ class FriendViewModel with ChangeNotifier {
         allRelations.add(userAndFriend);
       }
     });
+    allRelations.sort((a, b) => a.user.username.compareTo(b.user.username));
     return allRelations.toList();
   }
 
@@ -47,7 +48,7 @@ class FriendViewModel with ChangeNotifier {
     allFriends.add(FriendsListItem(Friend(11, 16, true))); */
     //allFriends.add(FriendsListItem(Friend(11, 17, false)));
     
-
+allFriends.sort((a, b) => a.userAndFriend.user.username.compareTo(b.userAndFriend.user.username));
     return allFriends.toList();
   }
 
@@ -62,6 +63,7 @@ class FriendViewModel with ChangeNotifier {
         allUsers.add(userListItem);
       }
     });
+    allUsers.sort((a, b) => a.userAndFriend.user.username.compareTo(b.userAndFriend.user.username));
     return allUsers;
   }
 
