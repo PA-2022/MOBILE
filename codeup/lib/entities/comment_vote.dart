@@ -7,12 +7,13 @@ class CommentVote {
   const CommentVote(this.id,this.upvote, this.user_id, this.comment_id);
 
 factory CommentVote.fromJson(Map<String, dynamic> json) {
-    return CommentVote(
+  
+    return json != null ? CommentVote(
       json['id'],
       json['upvote'],
       json['userId'],
       json['commentId']
-    );
+    ) : CommentVote(-1, false, 1, 1);
   }
  @override
   String toString() {

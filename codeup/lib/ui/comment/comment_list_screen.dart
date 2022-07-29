@@ -5,6 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:codeup/ui/comment/viewModel/comment_view_model.dart';
 import 'package:http/http.dart';
 
+import '../../entities/comment_global.dart';
+import '../../entities/content_post.dart';
 import '../../entities/post.dart';
 import '../../services/auth_service.dart';
 import '../authentication/sign_in/sign_in_screen.dart';
@@ -32,7 +34,7 @@ class _CommentListScreenState extends State<CommentListScreen> {
   @override
   void initState()  {
     
-    widget.post = PostBox(widget.post.post, widget.post.languages,
+    widget.post = PostBox(widget.post.postContent, widget.post.languages,
         0, widget.post.isSaved, widget.post.commiter, false);
     responseContent = "";
     super.initState();
@@ -50,11 +52,16 @@ class _CommentListScreenState extends State<CommentListScreen> {
   }
 
   void sendResponse() async {
-    Response response = await commentService.addComment(
-        Comment(-1, commentController.text, null,
-            AuthService.currentUser!.user.id, "?", widget.post.post.id, null, 0), 
+Comment comment = Comment(-1, commentController.text, null,
+            AuthService.currentUser!.user.id, "?", widget.post.postContent.post.id, null, 0);
+    List<ContentPost> contents = [];
+  contents.add(ContentPost(-1, comment.content, comment.postId, -1, 0, 0, ""));
+  CommentGlobal commentGlobal = CommentGlobal(comment, AuthService.currentUser!.user, contents );
+      
+    Response response = await commentService.addComment(commentGlobal
+        , 
         AuthService.currentUser!,
-        widget.post.post);
+        widget.post.postContent.post);
 
     if (response.statusCode == 200 || response.statusCode == 201) {
       FocusScope.of(context).requestFocus(FocusNode());
@@ -126,7 +133,7 @@ class _CommentListScreenState extends State<CommentListScreen> {
 
   Widget _getBody() {
     return FutureBuilder(
-        future: commentViewModel.fetchComments(widget.post.post.id),
+        future: commentViewModel.fetchComments(widget.post.postContent.post.id),
         builder: (BuildContext context,
             AsyncSnapshot<List<CommentListItem>> snapshot) {
           return snapshot.data != null

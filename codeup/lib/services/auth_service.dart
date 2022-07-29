@@ -1,7 +1,8 @@
 import 'dart:convert';
-import 'dart:math';
+import 'dart:io';
 import 'package:http/http.dart' as http;
 import 'package:flutter_dotenv/flutter_dotenv.dart' as dotenv;
+import 'package:http/io_client.dart';
 
 import '../entities/person.dart';
 import '../ui/authentication/viewModel/sign_in_fields_view_model.dart';
@@ -9,7 +10,7 @@ import '../entities/user.dart';
 import 'secure_storage.dart';
 
 class AuthService {
-  static String apiUrl = "http://" +
+  static String apiUrl = "https://" +
       (dotenv.env.keys.contains("HOST") ? dotenv.env["HOST"]! : "localhost") +
       ":" +
       (dotenv.env.keys.contains("SERVER_PORT")
@@ -33,7 +34,7 @@ class AuthService {
 
     User loggedUser =
         users.firstWhere((user) => user.username == userFields.username);
-    currentUser = Person(loggedUser,"http://elasticbeanstalk-eu-west-1-766564147455.s3.eu-west-1.amazonaws.com/avatar.png");// + photo!
+    currentUser = Person(loggedUser, ""); // + photo!
     return currentUser;
   }
 
@@ -69,7 +70,6 @@ class AuthService {
         'password': user.password
       }),
     );
-print(response.body);
     return response;
   }
 
@@ -85,7 +85,9 @@ print(response.body);
         'password': user.password,
         'email': user.email,
         'firstname': user.firstname,
-        'lastname': user.lastname
+        'lastname': user.lastname,
+        'profilePictureUrl': user.profilePictureUrl + user.profilePictureName,
+        'profilePictureName': user.profilePictureName
       }),
     );
     return response;
@@ -93,11 +95,13 @@ print(response.body);
 
   Future<http.Response> updateAccount(
       SignInFieldsViewModel signInFieldsVm, User user) async {
+        
+
     String token = "";
     token = await SecureStorageService.getInstance()
         .get("token")
         .then((value) => token = value.toString());
-    final response = http.put(
+    final response = await http.put(
       Uri.parse(apiUrl + "users/" + user.id.toString()),
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
@@ -106,12 +110,41 @@ print(response.body);
       body: jsonEncode(<String, String>{
         'id': user.id.toString(),
         'username': user.username,
+        'password': user.password,
         'email': user.email,
         'firstname': user.firstname,
         'lastname': user.lastname
       }),
     );
+   
     return response;
+  }
+
+  Future<http.StreamedResponse> uploadPp(File file) async {
+    String token = "";
+    token = await SecureStorageService.getInstance()
+        .get("token")
+        .then((value) => token = value.toString());
+
+    var request = http.MultipartRequest(
+      'POST',
+      Uri.parse(
+        apiUrl + 'users/profile-picture',
+      ),
+    );
+
+            
+    request.files.add(http.MultipartFile('image',
+        File(file.path).readAsBytes().asStream(), File(file.path).lengthSync(),
+        filename: file.path.split("/").last));
+    request.headers['cookie'] = token;
+    var res = await request.send().then((response) {
+      if(response.statusCode == 200) {
+       /*  AuthService.currentUser!.user.profilePictureUrl = dotenv.env["BUCKET_NAME"].toString();
+        AuthService.currentUser!.user.profilePictureName = file.path.split("/").last; */
+      }
+    });
+    return res;
   }
 
   static void setCurrentUser(Person? user) {

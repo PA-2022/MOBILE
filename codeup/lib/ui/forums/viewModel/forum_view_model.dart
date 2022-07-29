@@ -2,8 +2,10 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 
+import '../../../entities/content_post.dart';
 import '../../../entities/forum.dart';
 import '../../../entities/post.dart';
+import '../../../entities/post_content.dart';
 import '../../../entities/user_forum_relation.dart';
 import '../../../services/forum_service.dart';
 import '../../../services/post_service.dart';
@@ -24,6 +26,7 @@ class ForumViewModel with ChangeNotifier {
   //final _random = new Random();
 
   Future<List<ForumListItem>> fetchForums() async {
+    
     List<ForumListItem> allForums = [];
     await forumService.fetchForums().then((data) async {
       for (dynamic element in jsonDecode(data.body)) {
@@ -46,6 +49,7 @@ class ForumViewModel with ChangeNotifier {
         allForums.add(forum);
       }
     });
+
     return allForums.reversed.toList();
   }
 
@@ -53,9 +57,18 @@ class ForumViewModel with ChangeNotifier {
     List<PostBox> allPosts = [];
     await postService.fetchPostsByForumId(id).then((data) async {
       for (dynamic element in jsonDecode(data.body)) {
+
         Post post = Post.fromJson(element);
+        ContentPost contentPost =
+                ContentPost(-1, post.content, post.id, -1, 0, 1, "");
+
+            List<ContentPost> contentPosts = [];
+            contentPosts.add(contentPost);
+
+            PostContent postContent = PostContent(post, contentPosts);
+
         PostBox postBoxWidget = PostBox(
-            post,
+            postContent,
             const [LanguageValue.C, LanguageValue.JAVA],
             post.userId,
             true,
@@ -64,7 +77,7 @@ class ForumViewModel with ChangeNotifier {
         if (post.forumId == id) allPosts.add(postBoxWidget);
       }
     });
-    return allPosts;
+    return allPosts.reversed.toList();
   }
 
   Future<ForumListItem> fetchForumById(int id) async {

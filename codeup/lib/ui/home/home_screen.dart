@@ -33,13 +33,14 @@ class _HomeScreenState extends State<HomeScreen> {
       backgroundColor: background_color,
       drawer: const Menu(),
       body: CustomScrollView(
+       
         slivers: [
           homeTop,
           SliverList(
             delegate: SliverChildListDelegate([
               Container(
                   decoration: BoxDecoration(color: background_color),
-                  height: MediaQuery.of(context).size.height * 8 / 10,
+                  height: MediaQuery.of(context).size.height ,
                   child: PostBoxList(homeTop)),
 
             ]),

@@ -103,7 +103,6 @@ class _CommentVotesCounterState extends State<CommentVotesCounter> {
   }
 
   void _incrementCounter() async {
-    print("incr");
     final response = await commentVoteService.editUserVoteForComment(
         CommentVote(-1, true, AuthService.currentUser!.user.id, widget.comment.id));
 
@@ -115,7 +114,6 @@ class _CommentVotesCounterState extends State<CommentVotesCounter> {
   }
 
   void _decrementCounter() async {
-    print("decr");
     final response = await commentVoteService.editUserVoteForComment(
         CommentVote(-1, false, AuthService.currentUser!.user.id, widget.comment.id));
     if (response.statusCode == 200 || response.statusCode == 201) {

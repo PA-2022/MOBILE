@@ -2,10 +2,10 @@ import 'user.dart';
 
 class Person {
 
-  final User user;
-  final String photoUrl;
+   User user;
+   String photoUrl;
   
-  const Person(this.user, this.photoUrl);
+   Person(this.user, this.photoUrl);
 }
 
 

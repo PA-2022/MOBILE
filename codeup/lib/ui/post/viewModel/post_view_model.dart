@@ -1,9 +1,11 @@
 import 'dart:convert';
 import 'dart:math';
 
+import 'package:codeup/services/post_service.dart';
 import 'package:codeup/services/post_vote_service.dart';
 import 'package:flutter/material.dart';
 
+import '../../../entities/content_post.dart';
 import '../../../entities/person.dart';
 import '../../../entities/post.dart';
 import '../../../entities/post_vote.dart';
@@ -13,7 +15,7 @@ import '../../common/test_data.dart';
 
 class PostViewModel with ChangeNotifier {
   AuthService authService = AuthService();
-
+  PostService postService = PostService();
   PostVoteService postVoteService = PostVoteService();
   User? commiter;
   final _random = Random();
@@ -73,6 +75,21 @@ class PostViewModel with ChangeNotifier {
       }
     });
     return postVote;
+   
+  }
+
+   Future<List<ContentPost>> fetchContentByPostId(int postId) async {
+    
+    List<ContentPost> contentPosts = [];
+    await postService.fetchContentById(postId).then((data) async {
+        for (dynamic element in jsonDecode(data.body)) {
+        ContentPost contentPost =
+            ContentPost.fromJson(element);
+        
+        contentPosts.add(contentPost);
+      }
+    });
+    return contentPosts;
    
   }
 

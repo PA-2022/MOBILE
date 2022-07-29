@@ -1,5 +1,7 @@
 import 'dart:io';
+import 'package:flutter_dotenv/flutter_dotenv.dart' as dotenv;
 
+import 'package:codeup/services/auth_service.dart';
 import 'package:codeup/ui/common/custom_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
@@ -7,6 +9,7 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:uuid/uuid.dart';
 import 'package:path/path.dart' as path;
 
+import '../../entities/user.dart';
 import 'custom_dialog.dart';
 import 'gallery_item.dart';
 
@@ -14,6 +17,7 @@ enum PhotoSource { FILE, NETWORK }
 
 class ImagePickerWidget extends StatefulWidget {
   List<GalleryItem> galleryItems = [];
+  List<File> photos = [];
   @override
   _ImagePickerWidgetState createState() => _ImagePickerWidgetState();
 }
@@ -25,13 +29,14 @@ class _ImagePickerWidgetState extends State<ImagePickerWidget> {
 
   bool imageChoosen = false;
 
-  List<File> _photos = [];
+  
   List<String> _photosUrls = [];
   List<PhotoSource> _photosSources = [];
   //List<GalleryItem> _galleryItems = [];
 
   @override
   Widget build(BuildContext context) {
+    
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       mainAxisAlignment: MainAxisAlignment.center,
@@ -40,12 +45,13 @@ class _ImagePickerWidgetState extends State<ImagePickerWidget> {
           height: 100,
           child: ListView.builder(
             scrollDirection: Axis.horizontal,
-            itemCount: _photos.length + 1,
+            itemCount: widget.photos.length + 1,
             itemBuilder: (context, index) {
               if (index == 0) {
                 return _buildAddPhoto();
               }
-              File image = _photos[index - 1];
+              
+              File image = widget.photos[index - 1];
               PhotoSource source = _photosSources[index - 1];
               return Stack(
                 children: <Widget>[
@@ -65,32 +71,37 @@ class _ImagePickerWidgetState extends State<ImagePickerWidget> {
             },
           ),
         ),
-        Container(
+      /*   Container(
           margin: EdgeInsets.all(16),
           child: RaisedButton(
             child: Text('Save'),
             onPressed: () {},
           ),
-        )
+        ) */
       ],
     );
   }
 
   _buildAddPhoto() {
-    return InkWell(
-      onTap: () => _onAddPhotoClicked(context),
-      child: Container(
-        margin: EdgeInsets.all(5),
-        height: 100,
-        width: 100,
-        color: imageChoosen ? CustomColors.excellentGreen : kDarkGray,
-        child: Center(
-          child: Icon(
-            imageChoosen ? Icons.edit : Icons.add_to_photos,
-            color: kLightGray,
+    return FutureBuilder(
+      future: AuthService().getUserById(AuthService.currentUser!.user.id),
+      builder: (BuildContext context, AsyncSnapshot<User> snapshot) {
+        return InkWell(
+          onTap: () => _onAddPhotoClicked(context),
+          child: Container(
+            margin: !imageChoosen ? EdgeInsets.only(left:115) :EdgeInsets.all(5) ,
+            height: 100,
+            width: 100,
+            color: imageChoosen ? CustomColors.excellentGreen : kDarkGray,
+            child: Center(
+              child:imageChoosen ? Icon(
+                 Icons.edit,
+                color: kLightGray,
+              ) : snapshot.data != null ? Image(image: NetworkImage(snapshot.data!.profilePictureUrl)) : Image(image: NetworkImage(dotenv.env["DEFAULT_PP"].toString())) ,
+            ),
           ),
-        ),
-      ),
+        );
+      }
     );
   }
 
@@ -162,11 +173,11 @@ class _ImagePickerWidgetState extends State<ImagePickerWidget> {
         );
 
         setState(() {
-          if (_photos.length == 1) {
-            _photos[0] = (File(image.path));
+          if (widget.photos.length == 1) {
+            widget.photos[0] = (File(image.path));
             _photosSources[0] = (PhotoSource.FILE);
           } else {
-            _photos.add(File(image.path));
+            widget.photos.add(File(image.path));
             _photosSources.add(PhotoSource.FILE);
           }
         });

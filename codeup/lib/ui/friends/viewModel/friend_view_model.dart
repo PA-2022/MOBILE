@@ -1,8 +1,11 @@
 import 'dart:convert';
 
+import 'package:codeup/entities/user_and_friend.dart';
+import 'package:codeup/ui/friends/user_list_item.dart';
 import 'package:flutter/material.dart';
 
 import '../../../entities/Friend.dart';
+import '../../../entities/user.dart';
 import '../../../services/auth_service.dart';
 import '../../../services/friends_service.dart';
 import '../friends_list_item.dart';
@@ -10,21 +13,74 @@ import '../friends_list_item.dart';
 class FriendViewModel with ChangeNotifier {
   FriendViewModel();
   FriendService friendService = FriendService();
-  
+  AuthService authService = AuthService();
+
   //final _random = new Random();
+
+   Future<List<UserAndFriend>> fetchUsersAndFriends() async {
+    List<UserAndFriend> allRelations = [];   
+    await friendService
+        .fetchFriendsById(AuthService.currentUser!.user.id)
+        .then((data) {  
+      for (dynamic element in jsonDecode(data.body)) { 
+        UserAndFriend userAndFriend = UserAndFriend.fromJson(element);
+        User user = userAndFriend.user;
+        Friend friend = userAndFriend.friend;
+        allRelations.add(userAndFriend);
+      }
+    });
+    allRelations.sort((a, b) => a.user.username.compareTo(b.user.username));
+    return allRelations.toList();
+  }
 
   Future<List<FriendsListItem>> fetchFriendsOfUser() async {
     List<FriendsListItem> allFriends = [];
-    //await userFriendRelationService.fetchRelationsOfUser().then((data) async {
-      
-       FriendsListItem friend1= FriendsListItem(Friend(AuthService.currentUser!.user.id, 1, true));
-       FriendsListItem friend2= FriendsListItem(Friend(AuthService.currentUser!.user.id, 1, true));
-        
-        allFriends.add(friend1);
-        allFriends.add(friend2);
+    await fetchUsersAndFriends().then((relations) {
 
-    //}); 
-    return allFriends..toList();
+      for(UserAndFriend userAndFriend in relations) {
+        FriendsListItem friendsListItem = FriendsListItem(userAndFriend);
+        allFriends.add(friendsListItem);
+      }
+    });
+    /* allFriends.add(FriendsListItem(Friend(16, 11, false)));
+    allFriends.add(FriendsListItem(Friend(16, 11, false)));
+    allFriends.add(FriendsListItem(Friend(16, 11, true)));
+    allFriends.add(FriendsListItem(Friend(11, 16, true))); */
+    //allFriends.add(FriendsListItem(Friend(11, 17, false)));
+    
+allFriends.sort((a, b) => a.userAndFriend.user.username.compareTo(b.userAndFriend.user.username));
+    return allFriends.toList();
+  }
+
+  Future<List<UserListItem>> fetchUsers() async {
+    List<UserListItem> allUsers = [];
+    var users = await authService.getUsers().then((data) {
+      for (dynamic element in jsonDecode(data.body)) {
+        User user = User.fromJson(element);
+        UserAndFriend userAndFriend = UserAndFriend(user, Friend(0,0,true ));
+        UserListItem userListItem = UserListItem(userAndFriend);
+        if(userListItem.userAndFriend.user.id != AuthService.currentUser!.user.id)
+        allUsers.add(userListItem);
+      }
+    });
+    allUsers.sort((a, b) => a.userAndFriend.user.username.compareTo(b.userAndFriend.user.username));
+    return allUsers;
+  }
+
+  Future<bool> isAFriend(int otherUserId) async {
+    var foundInFriends = false;
+    await fetchFriendsOfUser().then((data) {
+      for (FriendsListItem friendsListItem in data) {
+        if (friendsListItem.userAndFriend.friend.friend_id ==
+                AuthService.currentUser!.user.id ||
+            friendsListItem.userAndFriend.friend.user_id ==
+                AuthService.currentUser!.user.id) {
+          foundInFriends = true;
+        }
+      }
+    });
+
+    return foundInFriends;
   }
 
   /* Future<List<PostBox>> fetchFriendPosts(int id) async {
@@ -51,7 +107,7 @@ class FriendViewModel with ChangeNotifier {
     return FriendsListItem(Friend, Friend.title, Icons.Friend_outlined, false, 1);
   }
  */
- /*  Future<FriendListItem?> joinFriend(int userId, int FriendId) async {
+  /*  Future<FriendListItem?> joinFriend(int userId, int FriendId) async {
     final response =
         await userFriendRelationService.addRelation(userId, FriendId);
 

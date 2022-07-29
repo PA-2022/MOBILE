@@ -81,7 +81,7 @@ class _ForumPageScreenState extends State<ForumPageScreen> {
                                 TextButton(
                                     onPressed: () => unjoinForum(context),
                                     child: const Text(
-                                      "Unjoin forum",
+                                      "Quit",
                                       style: TextStyle(
                                           color: Colors.white,
                                           fontSize: 16,

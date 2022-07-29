@@ -32,9 +32,9 @@ class LoggedUserPostList extends StatelessWidget with ChangeNotifier {
                     child: ListView(
                       children: [
                         for (PostBox post in snapshot.data as List<PostBox>)
-                          (post.post.title.toLowerCase().contains(
+                          (post.postContent.post.title.toLowerCase().contains(
                                       appBar.valueSearch.toLowerCase()) ||
-                                  post.post.content.toLowerCase().contains(
+                                  post.postContent.post.content.toLowerCase().contains(
                                       appBar.valueSearch.toLowerCase()))
                               ? post
                               : Container()

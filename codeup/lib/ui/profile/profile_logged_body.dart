@@ -1,9 +1,14 @@
+
+import 'package:codeup/ui/common/image_picker_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+
+import 'package:flutter_dotenv/flutter_dotenv.dart' as dotenv;
 
 import '../../entities/person.dart';
 import '../../entities/user.dart';
 import '../../services/auth_service.dart';
+import '../../services/secure_storage.dart';
 import '../../utils/sign_in_field_enum.dart';
 import '../authentication/viewModel/sign_in_fields_view_model.dart';
 import '../authentication/viewModel/soft_keyboard_view_model.dart';
@@ -25,6 +30,7 @@ class ProfileLoggedBody extends StatefulWidget {
 
 class _ProfileLoggedBodyState extends State<ProfileLoggedBody> {
   var currentUser = AuthService.currentUser;
+  ImagePickerWidget imagePickerWidget = ImagePickerWidget();
   AuthService authService = AuthService();
 
   final SoftKeyboardViewModel _softKeyboardVm = SoftKeyboardViewModel();
@@ -118,6 +124,7 @@ class _ProfileLoggedBodyState extends State<ProfileLoggedBody> {
         CustomAppBar("My Profile", false, null),
         SliverList(
           delegate: SliverChildListDelegate([
+                 
             Padding(
               padding: const EdgeInsets.all(15.0),
               child: Column(
@@ -125,10 +132,10 @@ class _ProfileLoggedBodyState extends State<ProfileLoggedBody> {
                 children: <Widget>[
                   Padding(
                     padding: const EdgeInsets.all(10.0),
-                    child: Image.network(
-                      currentUser!.photoUrl,
-                      height: 120,
-                    ),
+                    child: /* Image.network(
+                      currentUser!.user.profilePictureUrl,
+                      height: 100,
+                    ), */ Container(child: imagePickerWidget),
                   ),
                   const Text("Username"),
                   _buildUsername(
@@ -484,34 +491,26 @@ class _ProfileLoggedBodyState extends State<ProfileLoggedBody> {
   }
 
   _updateProfile() async {
-    User userUpdated = User(
+      if(imagePickerWidget.galleryItems.isNotEmpty){
+          authService.uploadPp(imagePickerWidget.photos[0]);
+}
+
+User userUpdated = User(
         currentUser!.user.id,
         _signInFieldsVm.tLoginController.text,
         currentUser!.user.password,
         _signInFieldsVm.tUsernameController.text,
         _signInFieldsVm.tFirstnameController.text,
-        _signInFieldsVm.tLastnameController.text);
-
-    print(userUpdated.id.toString() +
-        " " +
-        userUpdated.email +
-        " " +
-        userUpdated.password +
-        " " +
-        userUpdated.username +
-        " " +
-        userUpdated.firstname +
-        " " +
-        userUpdated.lastname);
-
+        _signInFieldsVm.tLastnameController.text,
+        dotenv.env["DEFAULT_PP"].toString(),
+        ""
+        ); 
+        
     final response =
         await authService.updateAccount(_signInFieldsVm, userUpdated);
 
     if (response.statusCode == 200 || response.statusCode == 201) {
       {
-        AuthService.setCurrentUser(Person(userUpdated, currentUser!.photoUrl));
-        Navigator.of(context).push(MaterialPageRoute(
-            builder: (_) => ProfileScreen(AuthService.currentUser!, false)));
         const snackBar = SnackBar(
           content: Text('Changes have been saved'),
           backgroundColor: CustomColors.orange,
@@ -519,5 +518,10 @@ class _ProfileLoggedBodyState extends State<ProfileLoggedBody> {
         ScaffoldMessenger.of(context).showSnackBar(snackBar);
       }
     }
-  }
+  
 }
+
+_logOut(BuildContext context) async {
+  AuthService.setCurrentUser(null);
+  await SecureStorageService.getInstance().clear();
+}}

@@ -1,5 +1,8 @@
+import 'dart:io';
+
 import 'package:codeup/ui/common/gallery_item.dart';
 import 'package:codeup/ui/common/image_picker_widget.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart' as dotenv;
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -15,10 +18,9 @@ import '../viewModel/soft_keyboard_view_model.dart';
 class SignUpBottom extends StatefulWidget {
   final AuthService authService;
   final BuildContext ancestorContext;
-  final List<GalleryItem> photos;
 
   const SignUpBottom(
-      {Key? key, required this.ancestorContext, required this.authService, required this.photos})
+      {Key? key, required this.ancestorContext, required this.authService})
       : super(key: key);
 
   @override
@@ -144,17 +146,21 @@ class _SignUpBottomState extends State<SignUpBottom> {
   }
 
   void _submitAuthentication(SignInFieldsViewModel signInFieldsVm) async {
-    AuthService.photo = widget.photos[0].name;
+    //AuthService.photo = widget.photos[0].name;
     final user = User(
         -1,
         signInFieldsVm.tLoginController.text,
         signInFieldsVm.tPasswordController.text,
         signInFieldsVm.tUsernameController.text,
         signInFieldsVm.tFirstnameController.text,
-        signInFieldsVm.tLastnameController.text);
+        signInFieldsVm.tLastnameController.text,
+        dotenv.env["DEFAULT_PP"].toString(),
+        ""
+        );
+
 
     if (_validateSignUpFields(signInFieldsVm)) {
-      /* final response = await widget.authService.register(signInFieldsVm, user);
+      final response = await widget.authService.register(signInFieldsVm, user);
 
       if (response.statusCode == 200 || response.statusCode == 201) {
         //widget.authService.logIn(signInFieldsVm, user);
@@ -174,7 +180,7 @@ class _SignUpBottomState extends State<SignUpBottom> {
           backgroundColor: CustomColors.redText,
         );
         ScaffoldMessenger.of(context).showSnackBar(snackBar);
-      } */
+      }
     }
   }
 

@@ -55,7 +55,7 @@ class _CustomAppBarState extends State<CustomAppBar> {
                       controller: widget.textController,
                       decoration: InputDecoration(
                         prefixText: " ",
-                        hintText: '  Search for something',
+                        hintText: widget.searchBarType == SearchBarType.FRIEND ? "Search some users" : '  Search for something',
                         suffixIcon: IconButton(
                           icon: const Icon(Icons.search),
                           onPressed: () => _search(),

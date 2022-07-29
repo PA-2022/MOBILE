@@ -101,7 +101,6 @@ class _VotesCounterState extends State<VotesCounter> {
   }
 
   void _incrementCounter() async {
-    print("incr");
     final response = await postVoteService.editUserVoteForPost(
         PostVote(-1, true, AuthService.currentUser!.user.id, widget.post.id));
 
@@ -113,7 +112,6 @@ class _VotesCounterState extends State<VotesCounter> {
   }
 
   void _decrementCounter() async {
-    print("decr");
     final response = await postVoteService.editUserVoteForPost(
         PostVote(-1, false, AuthService.currentUser!.user.id, widget.post.id));
     if (response.statusCode == 200 || response.statusCode == 201) {

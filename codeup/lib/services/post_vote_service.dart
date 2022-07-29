@@ -6,7 +6,7 @@ import '../entities/post_vote.dart';
 import 'secure_storage.dart';
 
 class PostVoteService {
-  static String apiUrl = "http://" +
+  static String apiUrl = "https://" +
       (dotenv.env.keys.contains("HOST") ? dotenv.env["HOST"]! : "localhost") +
       ":" +
       (dotenv.env.keys.contains("SERVER_PORT")

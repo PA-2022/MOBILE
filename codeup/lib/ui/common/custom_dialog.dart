@@ -8,7 +8,6 @@ class CustomDialog {
   static void show(context, String heading, String subHeading,
       String positiveButtonText, Function onPressedPositive,
       String? negativeButtonText, Function? onPressedNegative) {
-        print("show");
     if (Platform.isIOS) {
       // iOS-specific code
       showCupertinoDialog(

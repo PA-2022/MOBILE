@@ -1,10 +1,12 @@
 import 'package:codeup/services/post_service.dart';
 import 'package:codeup/ui/home/home_screen.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart' as dotenv;
 import 'package:codeup/ui/home/viewModel/home_view_model.dart';
 import 'package:flutter/material.dart';
 
 import '../../entities/person.dart';
 import '../../entities/post.dart';
+import '../../entities/post_content.dart';
 import '../../entities/post_vote.dart';
 import '../../services/auth_service.dart';
 import '../../services/post_vote_service.dart';
@@ -22,13 +24,13 @@ import 'viewModel/post_view_model.dart';
 import 'post_votes_counter.dart';
 
 class PostBox extends StatefulWidget {
-  Post post;
+  PostContent postContent;
   final List<LanguageValue> languages;
   int votes;
   bool isSaved;
   Person commiter;
   bool areCommentsVisible;
-  PostBox(this.post, this.languages, this.votes, this.isSaved, this.commiter,
+  PostBox(this.postContent, this.languages, this.votes, this.isSaved, this.commiter,
       this.areCommentsVisible,
       {Key? key})
       : super(key: key);
@@ -52,8 +54,8 @@ class _PostBoxState extends State<PostBox> {
   @override
   Widget build(BuildContext context) {
     CommentViewModel commentViewModel = CommentViewModel();
-    commentViewModel.getCommentCount(widget.post);
-    var response = postViewModel.userHasVoted(widget.post);
+    commentViewModel.getCommentCount(widget.postContent.post);
+    //var response = postViewModel.userHasVoted(widget.postContent.post);
     
     return Padding(
       padding: const EdgeInsets.only(bottom: 10, left: 10, right: 10),
@@ -73,76 +75,81 @@ class _PostBoxState extends State<PostBox> {
           ),
           child: Column(
             children: [
-              Row(
-                children: [
-                  GestureDetector(
-                    onTap: () => _getCommiterProfile(context, widget.commiter),
-                    child: Row(
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.only(
-                              left: 10, top: 10, bottom: 10),
-                          child: SizedBox(
-                            height: 40,
-                            child: CircleAvatar(
-                                backgroundImage:
-                                    NetworkImage(widget.commiter.photoUrl),
-                                radius: 30),
+              Padding(
+                padding: const EdgeInsets.only(left:8.0),
+                child: Row(
+                  children: [
+                    GestureDetector(
+                      onTap: () => _getCommiterProfile(context, widget.commiter),
+                      child: Row(
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.only(
+                                left: 10, top: 10, bottom: 10, right: 10),
+                            child:  SizedBox(
+                                  height: 55,
+                                  child: CircleAvatar(
+                                    radius: 30,
+                                    backgroundImage: NetworkImage(widget.commiter.user.profilePictureUrl!= null ? widget.commiter.user.profilePictureUrl : dotenv.env["DEFAULT_PP"].toString()
+                                        ),
+                                  )),
+                            
                           ),
-                        ),
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              widget.commiter.user.firstname +
-                                  " " +
-                                  widget.commiter.user.lastname,
-                              style: const TextStyle(
-                                fontSize: 17,
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                widget.commiter.user.username,
+                                style: const TextStyle(
+                                  fontSize: 17,
+                                ),
                               ),
-                            ),
-                            Text(
-                              DateHelper.formatDate(
-                                  widget.post.creationDate.toString()),
-                              style: const TextStyle(
-                                  fontSize: 15, color: Colors.grey),
-                            ),
-                          ],
-                        ),
-                      ],
+                              Text(
+                                DateHelper.formatDate(
+                                    widget.postContent.post.creationDate.toString()),
+                                style: const TextStyle(
+                                    fontSize: 15, color: Colors.grey),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
                     ),
-                  ),
-                  if (AuthService.currentUser != null &&
-                      AuthService.currentUser!.user.id == widget.post.userId)
-                    Padding(
-                      padding: const EdgeInsets.only(right: 10),
-                      child: IconButton(
-                          onPressed: () => _editPost(),
-                          icon: const Icon(Icons.edit_outlined)),
-                    )
-                ],
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    if (AuthService.currentUser != null &&
+                        AuthService.currentUser!.user.id == widget.postContent.post.userId)
+                      Padding(
+                        padding: const EdgeInsets.only(right: 10),
+                        child: IconButton(
+                            onPressed: () => _editPost(),
+                            icon: const Icon(Icons.edit_outlined)),
+                      )
+                  ],
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                ),
               ),
-              Text(
-                widget.post.title,
-                style: const TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 18,
+              Padding(
+                padding: const EdgeInsets.only(left: 15.0),
+                child: Text(
+                  widget.postContent.post.title,
+                  style: const TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 18,
+                  ),
                 ),
               ),
               Padding(
                 padding: const EdgeInsets.only(left: 5),
                 child: Row(children: [
                   //for (LanguageValue language in widget.languages)
-                    PostLanguageText(widget.post.forumId),
+                    PostLanguageText(widget.postContent.post.forumId),
                 ]),
               ),
               Padding(
                 padding: const EdgeInsets.only(left: 10),
                 child: Row(
                   children: [
-                    VotesCounter(widget.post.note, widget.post),
-                    Flexible(child: TextViewer(widget.post.content)),
+                    VotesCounter(widget.postContent.post.note, widget.postContent.post),
+                    Flexible(child:  TextViewer(widget.postContent.contentPost[0].content)),
                   ],
                 ),
               ),
@@ -154,7 +161,7 @@ class _PostBoxState extends State<PostBox> {
                       GestureDetector(
                         child: FutureBuilder(
                             future:
-                                commentViewModel.getCommentCount(widget.post),
+                                commentViewModel.getCommentCount(widget.postContent.post),
                             builder: (BuildContext context,
                                 AsyncSnapshot<String> snapshot) {
                               return PostBoxAction(
@@ -172,10 +179,10 @@ class _PostBoxState extends State<PostBox> {
                         onTap: () => _openComments(context),
                       ),
                     
-                    GestureDetector(
+                    /* GestureDetector(
                         child: PostBoxAction(
                             Icons.share_outlined, "Share", () => _share()),
-                        onTap: () => _share()),
+                        onTap: () => _share()), */
                   ],
                 ),
               ),
@@ -186,7 +193,7 @@ class _PostBoxState extends State<PostBox> {
 
   _upvote() async {
     final response = await postVoteService.editUserVoteForPost
-    (PostVote(-1,true,widget.post.id, AuthService.currentUser!.user.id ));
+    (PostVote(-1,true,widget.postContent.post.id, AuthService.currentUser!.user.id ));
     if(response.statusCode == 200 || response.statusCode == 201) {
       
     }
@@ -222,8 +229,8 @@ class _PostBoxState extends State<PostBox> {
   }
 
   _openComments(BuildContext context) async {
-    Post newPost = await homeViewModel.fetchPostById(widget.post.id);
-    widget.post = newPost;
+    Post newPost = await homeViewModel.fetchPostById(widget.postContent.post.id);
+    widget.postContent.post = newPost;
     
     Navigator.of(context).push(MaterialPageRoute(builder: (_) {
       return CommentListScreen(widget);

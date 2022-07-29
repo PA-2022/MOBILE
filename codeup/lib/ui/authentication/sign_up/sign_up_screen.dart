@@ -70,7 +70,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  SignUpBody(imagePickerWidget),
+                  SignUpBody(),
                   Flexible(
                     child: Container(), 
                   ), 

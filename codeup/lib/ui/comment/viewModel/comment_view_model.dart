@@ -3,6 +3,7 @@ import 'dart:math';
 
 import 'package:codeup/entities/comment_global.dart';
 import 'package:codeup/entities/comment_response.dart';
+import 'package:codeup/entities/content_post.dart';
 import 'package:codeup/services/comment_service.dart';
 import 'package:codeup/services/comment_vote_service.dart';
 import 'package:codeup/ui/comment/comment_list_item.dart';
@@ -33,16 +34,19 @@ class CommentViewModel with ChangeNotifier {
   int randomNumber(int min, int max) => min + _random.nextInt(max - min);
 
   Future<List<CommentListItem>> fetchComments(int postId) async {
+    
     List<CommentListItem> allComments = [];
     await commentService.fetchCommentsOfPost(postId).then((data) async {
       for (dynamic element in jsonDecode(data.body)) {
+        
         CommentResponse commentResponse = CommentResponse.fromJson(element);
         
         CommentGlobal commentGlobal = commentResponse.commentGlobal;
+        
         Comment comment = commentGlobal.comment;
         
         CommentListItem commentListItem = CommentListItem(
-            comment, await getCommiter(comment));
+            commentResponse, await getCommiter(comment));
         allComments.add(commentListItem);
       }
     });
@@ -52,8 +56,13 @@ class CommentViewModel with ChangeNotifier {
 
   Future<Comment?> insertComment(
       Comment comment, Person user, Post post) async {
+  
+  List<ContentPost> contents = [];
+  contents.add(ContentPost(-1, comment.content, post.id, -1, 0, 0, ""));
+  CommentGlobal commentGlobal = CommentGlobal(comment, user.user, contents );
+        
     final Response response =
-        await commentService.addComment(comment, user, post);
+        await commentService.addComment(commentGlobal, user, post);
     if (response.statusCode == 200 || response.statusCode == 201) {
       return comment;
     } else {
@@ -97,10 +106,9 @@ class CommentViewModel with ChangeNotifier {
     await commentVoteService.fetchUserVoteByCommentId(commentId).then((data) async {
       if (jsonDecode(data.body) != null) {
         commentVote = CommentVote.fromJson(jsonDecode(data.body));
-        print(data.body);
       }
     });
-    //print(commentVote);
+
     return commentVote;
    
   }

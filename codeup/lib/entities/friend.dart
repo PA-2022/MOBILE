@@ -7,13 +7,13 @@ class Friend {
 
 factory Friend.fromJson(Map<String, dynamic> json) {
     return Friend(
-      json['user_id'],
-      json['friend_id'],
-      json['is_accepted']
+      json['userId'],
+      json['friendId'],
+      json['accepted']
     );
   }
  @override
   String toString() {
-    return "{id: $user_id, title: $friend_id, content: $is_accepted}";
+    return "{user_id: $user_id, friend_id: $friend_id, is_accepted: $is_accepted}";
   }
 }

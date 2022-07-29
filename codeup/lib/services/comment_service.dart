@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:codeup/entities/comment_global.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter_dotenv/flutter_dotenv.dart' as dotenv;
 
@@ -8,7 +9,7 @@ import '../entities/post.dart';
 import 'secure_storage.dart';
 
 class CommentService {
-  static String apiUrl = "http://" +
+  static String apiUrl = "https://" +
       (dotenv.env.keys.contains("HOST") ? dotenv.env["HOST"]! : "localhost") +
       ":" +
       (dotenv.env.keys.contains("SERVER_PORT")
@@ -51,7 +52,7 @@ class CommentService {
   }
 
   Future<http.Response> addComment(
-      Comment comment, Person user, Post post) async {
+      CommentGlobal comment, Person user, Post post) async {
     String token = "";
     token = await SecureStorageService.getInstance()
         .get("token")
@@ -64,15 +65,29 @@ class CommentService {
     return await http.post(
       Uri.parse(apiUrl),
       headers: headers,
-      body: jsonEncode({
-        'content': comment.content,
+      body: jsonEncode({'comment':{
+        'content': "",
         'commentParentId': null,
         'userId': user.user.id,
-        'code': comment.code,
-        'postId': post.id
-      }),
+        'code': comment.comment.code,
+        'postId': comment.comment.postId,
+        'note': comment.comment.note
+      },
+      'contentPost': [
+        {
+            "content": comment.contents[0].content,
+            "postId": null,
+            "commentId": null,
+            "type": 0,
+            "position": 0,
+            "language": comment.contents[0].language
+        }
+    ]}),
     );
   }
+
+ 
+
 
   Future<http.Response> updateComment(Comment comment, Person user) async {
     String token = "";
